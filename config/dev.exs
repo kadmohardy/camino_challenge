@@ -5,7 +5,7 @@ config :camino_challenge, CaminoChallenge.Repo,
   username: "postgres",
   password: "postgres",
   database: "camino_challenge_dev",
-  hostname: "localhost",
+  hostname: System.get_env("HOST_DB") || "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

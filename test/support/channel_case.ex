@@ -14,7 +14,7 @@ defmodule CaminoChallengeWeb.ChannelCase do
   by setting `use CaminoChallengeWeb.ChannelCase, async: true`, although
   this option is not recommended for other databases.
   """
-
+  alias Ecto.Adapters.SQL.Sandbox
   use ExUnit.CaseTemplate
 
   using do
@@ -29,10 +29,10 @@ defmodule CaminoChallengeWeb.ChannelCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(CaminoChallenge.Repo)
+    :ok = Sandbox.checkout(CaminoChallenge.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(CaminoChallenge.Repo, {:shared, self()})
+      Sandbox.mode(CaminoChallenge.Repo, {:shared, self()})
     end
 
     :ok
