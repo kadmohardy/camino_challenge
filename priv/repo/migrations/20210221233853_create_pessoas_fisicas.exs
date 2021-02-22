@@ -12,6 +12,5 @@ defmodule CaminoChallenge.Repo.Migrations.CreatePessoasFisicas do
     end
 
     create(unique_index(:pessoas_fisicas, [:cpf]))
-
   end
 end

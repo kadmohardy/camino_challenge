@@ -34,7 +34,9 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
 
   describe "create pessoa_fisica" do
     test "renders pessoa_fisica when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.api_pessoa_fisica_path(conn, :create), pessoa_fisica: @create_attrs)
+      conn =
+        post(conn, Routes.api_pessoa_fisica_path(conn, :create), pessoa_fisica: @create_attrs)
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.api_pessoa_fisica_path(conn, :show, id))
@@ -48,7 +50,9 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.api_pessoa_fisica_path(conn, :create), pessoa_fisica: @invalid_attrs)
+      conn =
+        post(conn, Routes.api_pessoa_fisica_path(conn, :create), pessoa_fisica: @invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end

@@ -17,5 +17,6 @@ defmodule CaminoChallenge.PessoasFisicas.Entities.PessoaFisica do
     pessoa_fisica
     |> cast(attrs, [:nome, :cpf, :data_nascimento])
     |> validate_required([:nome, :cpf, :data_nascimento])
+    |> unique_constraint(:cpf)
   end
 end
