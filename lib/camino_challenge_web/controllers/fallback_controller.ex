@@ -15,10 +15,13 @@ defmodule CaminoChallengeWeb.FallbackController do
   end
 
   # This clause is an example of how to handle resources that cannot be found.
-  def call(conn, {:error, :not_found}) do
+  def call(conn, {:error, message}) do
     conn
-    |> put_status(:not_found)
-    |> put_view(CaminoChallengeWeb.ErrorView)
-    |> render(:"404")
+    |> put_status(:bad_request)
+    |> json(%{
+      error: %{
+        message: message
+      }
+    })
   end
 end
