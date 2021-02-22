@@ -21,9 +21,11 @@ defmodule CaminoChallengeWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", CaminoChallengeWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", CaminoChallengeWeb.Api, as: :api do
+    pipe_through :api
+
+    resources "/pessoas_fisicas", PessoaFisicaController
+  end
 
   # Enables LiveDashboard only for development
   #
