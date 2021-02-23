@@ -1,4 +1,4 @@
-defmodule CaminoChallenge.PessoasFisicas.Repositories.PessoaFisicaRepository do
+defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
   @moduledoc """
   The PessoasFisicas context.
   """
@@ -6,7 +6,8 @@ defmodule CaminoChallenge.PessoasFisicas.Repositories.PessoaFisicaRepository do
   import Ecto.Query, warn: false
   alias CaminoChallenge.Repo
 
-  alias CaminoChallenge.PessoasFisicas.Entities.PessoaFisica
+  alias CaminoChallenge.Pessoas.Entities.Pessoa
+  alias CaminoChallenge.Pessoas.Entities.PessoaFisica
 
   @doc """
   Returns the list of pessoas_fisicas.
@@ -18,7 +19,7 @@ defmodule CaminoChallenge.PessoasFisicas.Repositories.PessoaFisicaRepository do
 
   """
   def list_pessoas_fisicas do
-    Repo.all(PessoaFisica)
+    Repo.all(PessoaFisica) |> Repo.preload(:pessoa)
   end
 
   @doc """
@@ -49,10 +50,34 @@ defmodule CaminoChallenge.PessoasFisicas.Repositories.PessoaFisicaRepository do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_pessoa_fisica(attrs \\ %{}) do
-    %PessoaFisica{}
-    |> PessoaFisica.changeset(attrs)
-    |> Repo.insert()
+
+  # def create_pessoa_fisica(attrs \\ %{}) do
+  #   %PessoaFisica{}
+  #   |> PessoaFisica.changeset(attrs)
+  #   |> Repo.insert()
+  # end
+
+  def create_pessoa_fisica(%{"nome" => nome, "cpf" => cpf, "data_nascimento" => data_nascimento}) do
+    Repo.get_by(PessoaFisica, cpf: cpf)
+    |> case do
+      nil ->
+        Repo.transaction(fn ->
+          {:ok, pessoa} = Repo.insert(%Pessoa{nome: nome, type: "fisica"})
+
+          {:ok, pessoa_juridica} = %PessoaFisica{}
+          |> PessoaFisica.changeset(%{
+            cpf: cpf,
+            data_nascimento: data_nascimento
+          })
+          |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
+          |> Repo.insert()
+
+          pessoa_juridica
+        end)
+
+      _ ->
+        {:error, "Já existe um cadastro para este CPF."}
+    end
   end
 
   @doc """

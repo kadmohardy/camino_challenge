@@ -1,11 +1,12 @@
-defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoaJuridicaRepository do
+defmodule CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository do
   @moduledoc """
   The PessoasJuridicas context.
   """
   require Logger
   import Ecto.Query, warn: false
-  alias CaminoChallenge.PessoasJuridicas.Entities.Endereco
-  alias CaminoChallenge.PessoasJuridicas.Entities.PessoaJuridica
+  alias CaminoChallenge.Pessoas.Entities.Endereco
+  alias CaminoChallenge.Pessoas.Entities.Pessoa
+  alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
   alias CaminoChallenge.Repo
 
   @doc """
@@ -17,8 +18,9 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoaJuridicaRepository
       [%PessoaJuridica{}, ...]
 
   """
-  def list_pessoas_juridicas, do: Repo.all(PessoaJuridica) |> Repo.preload(:enderecos)
-
+  def list_pessoas_juridicas do
+    Repo.all(PessoaJuridica) |> Repo.preload([:pessoa, :enderecos])
+  end
   @doc """
   Gets a single pessoa_juridica.
 
@@ -48,20 +50,28 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoaJuridicaRepository
 
   """
   def create_pessoa_juridica(%{"nome" => nome, "cnpj" => cnpj, "endereco" => endereco}) do
-
     Repo.get_by(PessoaJuridica, cnpj: cnpj)
     |> case do
       nil ->
         Repo.transaction(fn ->
-          pessoa_juridica = Repo.insert!(%PessoaJuridica{nome: nome, cnpj: cnpj})
+          {:ok, pessoa} = Repo.insert(%Pessoa{nome: nome, type: "juridica"})
 
-          %Endereco{}
-          |> Endereco.changeset(endereco)
-          |> Ecto.Changeset.put_assoc(:pessoa_juridica, pessoa_juridica)
-          |> Repo.insert()
+          {:ok, pessoa_juridica} =
+            %PessoaJuridica{}
+            |> PessoaJuridica.changeset(%{cnpj: cnpj})
+            |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
+            |> Repo.insert()
+
+          {:ok, endereco} =
+            pessoa_juridica
+            |> Ecto.build_assoc(:enderecos)
+            |> Endereco.changeset(endereco)
+            |> Repo.insert()
+
+          {pessoa_juridica, endereco}
         end)
 
-      user ->
+      _ ->
         {:error, "Já existe um cadastro para este CNPJ."}
     end
   end

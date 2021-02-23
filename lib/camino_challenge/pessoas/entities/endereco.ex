@@ -1,8 +1,8 @@
-defmodule CaminoChallenge.PessoasJuridicas.Entities.Endereco do
+defmodule CaminoChallenge.Pessoas.Entities.Endereco do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias CaminoChallenge.PessoasJuridicas.Entities.PessoaJuridica
+  alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Phoenix.Param, key: :id}
@@ -15,7 +15,8 @@ defmodule CaminoChallenge.PessoasJuridicas.Entities.Endereco do
 
     belongs_to :pessoa_juridica, PessoaJuridica,
       foreign_key: :pessoa_juridica_id,
-      type: :binary_id
+      type: :binary_id,
+      references: :id
 
     timestamps()
   end

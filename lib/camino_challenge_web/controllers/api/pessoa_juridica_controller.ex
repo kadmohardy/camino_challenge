@@ -1,8 +1,8 @@
 defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
   use CaminoChallengeWeb, :controller
 
-  alias CaminoChallenge.PessoasJuridicas.Entities.PessoaJuridica
-  alias CaminoChallenge.PessoasJuridicas.Repositories.PessoaJuridicaRepository
+  alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
+  alias CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository
   require Logger
   action_fallback CaminoChallengeWeb.FallbackController
 
@@ -12,7 +12,7 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
   end
 
   def create(conn, %{"pessoa_juridica" => pessoa_juridica_params}) do
-    with {:ok, %PessoaJuridica{} = pessoa_juridica} <-
+    with {:ok, {pessoa_juridica, endereco}} <-
            PessoaJuridicaRepository.create_pessoa_juridica(pessoa_juridica_params) do
       conn
       |> put_status(:created)
@@ -20,7 +20,9 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
         "location",
         Routes.api_pessoa_juridica_path(conn, :show, pessoa_juridica)
       )
-      |> render("show.json", pessoa_juridica: pessoa_juridica)
+      |> render("show.json",
+        pessoa_juridica: pessoa_juridica
+      )
     end
   end
 
