@@ -24,8 +24,9 @@ defmodule CaminoChallengeWeb.Router do
   scope "/api", CaminoChallengeWeb.Api, as: :api do
     pipe_through :api
 
-    resources "/pessoas_fisicas", PessoaFisicaController
-    resources "/pessoas_juridicas", PessoaJuridicaController
+    resources "/pessoas/fisicas", PessoaFisicaController
+    resources "/pessoas/juridicas", PessoaJuridicaController
+    resources "/contratos", ContratoController
   end
 
   # Enables LiveDashboard only for development

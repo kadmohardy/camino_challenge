@@ -1,12 +1,16 @@
 defmodule CaminoChallenge.Pessoas.Entities.Pessoa do
   use Ecto.Schema
   import Ecto.Changeset
+  alias CaminoChallenge.Contratos.Entities.PartesContrato
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Phoenix.Param, key: :id}
   schema "pessoas" do
     field :nome, :string
     field :type, :string
+
+    many_to_many :partes_contrato, PartesContrato, join_through: "contratos_partes"
+
     timestamps()
   end
 

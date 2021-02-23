@@ -8,7 +8,6 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaController do
 
   def index(conn, _params) do
     pessoas_fisicas = PessoaFisicaRepository.list_pessoas_fisicas()
-    Logger.info pessoas_fisicas
     render(conn, "index.json", pessoas_fisicas: pessoas_fisicas)
   end
 

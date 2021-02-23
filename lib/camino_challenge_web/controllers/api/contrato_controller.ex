@@ -15,7 +15,7 @@ defmodule CaminoChallengeWeb.Api.ContratoController do
     with {:ok, %Contrato{} = contrato} <- ContratoRepository.create_contrato(contrato_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.contrato_path(conn, :show, contrato))
+      |> put_resp_header("location", Routes.api_contrato_path(conn, :show, contrato))
       |> render("show.json", contrato: contrato)
     end
   end

@@ -5,7 +5,7 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
 
   import Ecto.Query, warn: false
   alias CaminoChallenge.Repo
-
+  require Logger
   alias CaminoChallenge.Contratos.Entities.Contrato
 
   @doc """
@@ -50,9 +50,10 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
 
   """
   def create_contrato(attrs \\ %{}) do
-    %Contrato{}
-    |> Contrato.changeset(attrs)
-    |> Repo.insert()
+    Logger.debug(attrs)
+    # %Contrato{}
+    # |> Contrato.changeset(attrs)
+    # |> Repo.insert()
   end
 
   @doc """
