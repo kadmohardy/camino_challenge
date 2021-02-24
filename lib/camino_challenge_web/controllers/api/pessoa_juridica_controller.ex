@@ -12,7 +12,7 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
   end
 
   def create(conn, %{"pessoa_juridica" => pessoa_juridica_params}) do
-    with {:ok, {pessoa_juridica, endereco}} <-
+    with {:ok, {pessoa_juridica, _}} <-
            PessoaJuridicaRepository.create_pessoa_juridica(pessoa_juridica_params) do
       conn
       |> put_status(:created)

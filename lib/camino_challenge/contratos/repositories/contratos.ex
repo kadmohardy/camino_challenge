@@ -3,10 +3,15 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
   The Contratos context.
   """
 
+  # "e9bdc6e5-4163-44b7-b57b-14d6e3844b6a, e6f26185-f54c-48f9-ba8f-346e5a54355c"
+
   import Ecto.Query, warn: false
+
   alias CaminoChallenge.Repo
   require Logger
   alias CaminoChallenge.Contratos.Entities.Contrato
+  alias CaminoChallenge.Contratos.Entities.Upload
+  alias CaminoChallenge.Contratos.Entities.PartesContrato
 
   @doc """
   Returns the list of contratos.
@@ -49,57 +54,51 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
       {:error, %Ecto.Changeset{}}
 
   """
+
+  # def create_contrato(attrs \\ %{}) do
+  #   Logger.debug(attrs)
+  #   # %Contrato{}
+  #   # |> Contrato.changeset(attrs)
+  #   # |> Repo.insert()
+  # end
+
   def create_contrato(attrs \\ %{}) do
-    Logger.debug(attrs)
-    # %Contrato{}
-    # |> Contrato.changeset(attrs)
-    # |> Repo.insert()
-  end
+    nome = attrs["nome"] || attrs.nome
+    descricao = attrs["descricao"] || attrs.descricao
+    data_str = attrs["data"] || attrs.data
+    partes = attrs["partes"] || attrs.partes
+    arquivo = attrs["arquivo"] || attrs.arquivo
 
-  @doc """
-  Updates a contrato.
+    {:ok, data} = Date.from_iso8601(data_str)
+    ids_parts_list = String.split(partes, ",")
 
-  ## Examples
+    Repo.transaction(fn ->
+      # 1. Insert dados do contrato
+      {:ok, contrato} = Repo.insert(%Contrato{nome: nome, descricao: descricao, data: data})
 
-      iex> update_contrato(contrato, %{field: new_value})
-      {:ok, %Contrato{}}
+      # 2. Insert file
+      {:ok, upload} = contrato
+      |> Ecto.build_assoc(:uploads)
+      |> Upload.changeset(%{
+        "arquivo" => arquivo,
+        "filename" => arquivo.filename,
+        "content_type" => arquivo.content_type
+      })
+      |> Repo.insert()
 
-      iex> update_contrato(contrato, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      Repo.insert_all(
+        PartesContrato,
+        ids_parts_list
+        |> Enum.map(fn item ->
+          %{
+            pessoa_id: item,
+            contrato_id: contrato.id
+          }
+        end)
+      )
+      {contrato, upload}
 
-  """
-  def update_contrato(%Contrato{} = contrato, attrs) do
-    contrato
-    |> Contrato.changeset(attrs)
-    |> Repo.update()
-  end
+    end)
 
-  @doc """
-  Deletes a contrato.
-
-  ## Examples
-
-      iex> delete_contrato(contrato)
-      {:ok, %Contrato{}}
-
-      iex> delete_contrato(contrato)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_contrato(%Contrato{} = contrato) do
-    Repo.delete(contrato)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking contrato changes.
-
-  ## Examples
-
-      iex> change_contrato(contrato)
-      %Ecto.Changeset{data: %Contrato{}}
-
-  """
-  def change_contrato(%Contrato{} = contrato, attrs \\ %{}) do
-    Contrato.changeset(contrato, attrs)
   end
 end

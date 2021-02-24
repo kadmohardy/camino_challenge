@@ -21,6 +21,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository do
   def list_pessoas_juridicas do
     Repo.all(PessoaJuridica) |> Repo.preload([:pessoa, :enderecos])
   end
+
   @doc """
   Gets a single pessoa_juridica.
 
@@ -49,7 +50,11 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_pessoa_juridica(%{"nome" => nome, "cnpj" => cnpj, "endereco" => endereco}) do
+  def create_pessoa_juridica(attrs \\ %{}) do
+    nome = attrs["nome"] || attrs.nome
+    cnpj = attrs["cnpj"] || attrs.cnpj
+    endereco = attrs["endereco"] || attrs.endereco
+
     Repo.get_by(PessoaJuridica, cnpj: cnpj)
     |> case do
       nil ->
@@ -74,52 +79,5 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository do
       _ ->
         {:error, "Já existe um cadastro para este CNPJ."}
     end
-  end
-
-  @doc """
-  Updates a pessoa_juridica.
-
-  ## Examples
-
-      iex> update_pessoa_juridica(pessoa_juridica, %{field: new_value})
-      {:ok, %PessoaJuridica{}}
-
-      iex> update_pessoa_juridica(pessoa_juridica, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_pessoa_juridica(%PessoaJuridica{} = pessoa_juridica, attrs) do
-    pessoa_juridica
-    |> PessoaJuridica.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a pessoa_juridica.
-
-  ## Examples
-
-      iex> delete_pessoa_juridica(pessoa_juridica)
-      {:ok, %PessoaJuridica{}}
-
-      iex> delete_pessoa_juridica(pessoa_juridica)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_pessoa_juridica(%PessoaJuridica{} = pessoa_juridica) do
-    Repo.delete(pessoa_juridica)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking pessoa_juridica changes.
-
-  ## Examples
-
-      iex> change_pessoa_juridica(pessoa_juridica)
-      %Ecto.Changeset{data: %PessoaJuridica{}}
-
-  """
-  def change_pessoa_juridica(%PessoaJuridica{} = pessoa_juridica, attrs \\ %{}) do
-    PessoaJuridica.changeset(pessoa_juridica, attrs)
   end
 end

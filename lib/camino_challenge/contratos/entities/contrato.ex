@@ -1,17 +1,20 @@
 defmodule CaminoChallenge.Contratos.Entities.Contrato do
   use Ecto.Schema
+  use Arc.Ecto.Schema
+
   import Ecto.Changeset
   alias CaminoChallenge.Contratos.Entities.PartesContrato
+  alias CaminoChallenge.Contratos.Entities.Upload
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Phoenix.Param, key: :id}
   schema "contratos" do
     field :data, :date
     field :descricao, :string
-    field :file, :string
     field :nome, :string
 
-    many_to_many :partes_contrato, PartesContrato, join_through: "contratos_partes"
+    has_many :partes_contrato, PartesContrato
+    has_one :uploads, Upload
 
     timestamps()
   end
@@ -19,7 +22,8 @@ defmodule CaminoChallenge.Contratos.Entities.Contrato do
   @doc false
   def changeset(contrato, attrs) do
     contrato
-    |> cast(attrs, [:file, :nome, :descricao, :data, :lista_partes])
-    |> validate_required([:file, :nome, :descricao, :data, :lista_partes])
+    |> cast(attrs, [:nome, :descricao, :data])
+    |> cast_attachments(attrs, [:arquivo])
+    |> validate_required([:nome, :descricao, :data])
   end
 end

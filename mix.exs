@@ -43,7 +43,7 @@ defmodule CaminoChallenge.MixProject do
   def application do
     [
       mod: {CaminoChallenge.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :arc_ecto, :runtime_tools]
     ]
   end
 
@@ -72,7 +72,10 @@ defmodule CaminoChallenge.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.8", only: :dev},
-      {:excoveralls, "~> 0.13.0", only: :test}
+      {:excoveralls, "~> 0.13.0", only: :test},
+      {:params, "~> 2.0"},
+      {:arc, "~> 0.11.0"},
+      {:arc_ecto, "~> 0.11.3"}
     ]
   end
 

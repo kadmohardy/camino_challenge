@@ -13,7 +13,7 @@ defmodule CaminoChallenge.Pessoas.Entities.PessoaJuridica do
     field :pessoa_id, :binary_id, foreign_key: :pessoa_id, references: :id
 
     belongs_to :pessoa, Pessoa, define_field: false
-    has_one :endereco, Endereco
+    has_one :enderecos, Endereco
 
     timestamps()
   end

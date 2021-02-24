@@ -5,7 +5,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
 
   import Ecto.Query, warn: false
   alias CaminoChallenge.Repo
-
+  require Logger
   alias CaminoChallenge.Pessoas.Entities.Pessoa
   alias CaminoChallenge.Pessoas.Entities.PessoaFisica
 
@@ -56,21 +56,26 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
   #   |> PessoaFisica.changeset(attrs)
   #   |> Repo.insert()
   # end
+  # %{"nome" => nome, "cpf" => cpf, "data_nascimento" => data_nascimento}
+  def create_pessoa_fisica(attrs \\ %{}) do
+    nome = attrs["nome"] || attrs.nome
+    cpf = attrs["cpf"] || attrs.cpf
+    data_nascimento = attrs["data_nascimento"] || attrs.data_nascimento
 
-  def create_pessoa_fisica(%{"nome" => nome, "cpf" => cpf, "data_nascimento" => data_nascimento}) do
     Repo.get_by(PessoaFisica, cpf: cpf)
     |> case do
       nil ->
         Repo.transaction(fn ->
           {:ok, pessoa} = Repo.insert(%Pessoa{nome: nome, type: "fisica"})
 
-          {:ok, pessoa_juridica} = %PessoaFisica{}
-          |> PessoaFisica.changeset(%{
-            cpf: cpf,
-            data_nascimento: data_nascimento
-          })
-          |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
-          |> Repo.insert()
+          {:ok, pessoa_juridica} =
+            %PessoaFisica{}
+            |> PessoaFisica.changeset(%{
+              cpf: cpf,
+              data_nascimento: data_nascimento
+            })
+            |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
+            |> Repo.insert()
 
           pessoa_juridica
         end)
@@ -78,52 +83,5 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
       _ ->
         {:error, "Já existe um cadastro para este CPF."}
     end
-  end
-
-  @doc """
-  Updates a pessoa_fisica.
-
-  ## Examples
-
-      iex> update_pessoa_fisica(pessoa_fisica, %{field: new_value})
-      {:ok, %PessoaFisica{}}
-
-      iex> update_pessoa_fisica(pessoa_fisica, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_pessoa_fisica(%PessoaFisica{} = pessoa_fisica, attrs) do
-    pessoa_fisica
-    |> PessoaFisica.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a pessoa_fisica.
-
-  ## Examples
-
-      iex> delete_pessoa_fisica(pessoa_fisica)
-      {:ok, %PessoaFisica{}}
-
-      iex> delete_pessoa_fisica(pessoa_fisica)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_pessoa_fisica(%PessoaFisica{} = pessoa_fisica) do
-    Repo.delete(pessoa_fisica)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking pessoa_fisica changes.
-
-  ## Examples
-
-      iex> change_pessoa_fisica(pessoa_fisica)
-      %Ecto.Changeset{data: %PessoaFisica{}}
-
-  """
-  def change_pessoa_fisica(%PessoaFisica{} = pessoa_fisica, attrs \\ %{}) do
-    PessoaFisica.changeset(pessoa_fisica, attrs)
   end
 end

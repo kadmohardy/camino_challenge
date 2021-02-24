@@ -13,7 +13,6 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaView do
   end
 
   def render("pessoa_juridica.json", %{pessoa_juridica: pessoa_juridica}) do
-
     %{
       id: pessoa_juridica.pessoa_id,
       nome: pessoa_juridica.pessoa.nome,
