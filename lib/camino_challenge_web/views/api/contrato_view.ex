@@ -10,17 +10,17 @@ defmodule CaminoChallengeWeb.Api.ContratoView do
     %{data: render_one(contrato, __MODULE__, "contrato_show.json")}
   end
 
-
   def render("contrato_index.json", %{contrato: contrato}) do
     %{
       id: contrato.id,
       nome: contrato.nome,
       descricao: contrato.descricao,
       data: contrato.data,
-      partes:  %{
+      partes: %{
         pessoas_fisicas: render_pf(contrato.partes.pessoas_fisicas),
-        pessoas_juridicas: render_pj(contrato.partes.pessoas_juridicas),
-      }
+        pessoas_juridicas: render_pj(contrato.partes.pessoas_juridicas)
+      },
+      arquivo_url: "http://192.168.0.100:4000/uploads/arquivos/" <> contrato.arquivo
     }
   end
 
@@ -29,7 +29,7 @@ defmodule CaminoChallengeWeb.Api.ContratoView do
       id: contrato.id,
       nome: contrato.nome,
       descricao: contrato.descricao,
-      data: contrato.data,
+      data: contrato.data
     }
   end
 
@@ -43,16 +43,18 @@ defmodule CaminoChallengeWeb.Api.ContratoView do
 
   def pf_json(pessoa_fisica) do
     %{
+      pessoa_id: pessoa_fisica.pessoa_id,
       nome: pessoa_fisica.nome,
-      cnpj: pessoa_fisica.cpf,
+      cpf: pessoa_fisica.cpf,
       data_nascimento: pessoa_fisica.data_nascimento
     }
   end
 
   def pj_json(pessoa_juridica) do
     %{
+      pessoa_id: pessoa_juridica.pessoa_id,
       nome: pessoa_juridica.nome,
-      cnpj: pessoa_juridica.cnpj,
+      cnpj: pessoa_juridica.cnpj
     }
   end
 
@@ -65,5 +67,4 @@ defmodule CaminoChallengeWeb.Api.ContratoView do
       pais: endereco.pais
     }
   end
-
 end

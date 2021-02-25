@@ -68,7 +68,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
         Repo.transaction(fn ->
           {:ok, pessoa} = Repo.insert(%Pessoa{nome: nome, type: "fisica"})
 
-          {:ok, pessoa_juridica} =
+          {:ok, pessoa_fisica} =
             %PessoaFisica{}
             |> PessoaFisica.changeset(%{
               cpf: cpf,
@@ -77,7 +77,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
             |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
             |> Repo.insert()
 
-          pessoa_juridica
+          pessoa_fisica
         end)
 
       _ ->

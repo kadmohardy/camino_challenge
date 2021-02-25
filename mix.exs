@@ -75,7 +75,15 @@ defmodule CaminoChallenge.MixProject do
       {:excoveralls, "~> 0.13.0", only: :test},
       {:params, "~> 2.0"},
       {:arc, "~> 0.11.0"},
-      {:arc_ecto, "~> 0.11.3"}
+      {:arc_ecto, "~> 0.11.3"},
+      {:bureaucrat, "~> 0.2.7"},
+      {:poison, "~> 3.0"},
+      {:absinthe, "~> 1.4", override: true},
+      {:absinthe_plug, "~> 1.5"},
+      {:absinthe_relay, "~> 1.4"},
+      {:absinthe_ecto, "~> 0.1.3"},
+      {:absinthe_error_payload, "~> 1.1"},
+      {:absinthe_phoenix, "~> 2.0.0"}
     ]
   end
 

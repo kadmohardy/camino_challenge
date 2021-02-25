@@ -26,78 +26,125 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
 
   """
 
-  def pessoas_fisicas(), do: Repo.all(PessoaFisica) |> Repo.preload(:pessoa)
-  def pessoas_juridicas(), do: Repo.all(PessoaJuridica) |> Repo.preload([:pessoa, :enderecos])
+  def pessoas_fisicas_repo(), do: Repo.all(PessoaFisica) |> Repo.preload(:pessoa)
 
-  def load_parte(pessoas_fisicas_repo, pessoas_juridicas_repo, parte) do
-    if parte.type == "fisica" do
-      pessoa_fisica = Enum.find(pessoas_fisicas_repo, &(&1.pessoa_id == parte.id))
-
-      %{
-        tipo: "fisica",
-        nome: pessoa_fisica.nome
-      }
-    else
-      pessoa_juridica = Enum.find(pessoas_juridicas_repo, &(&1.pessoa_id == parte.id))
-
-      %{
-        tipo: "fisica",
-        nome: pessoa_juridica.nome
-      }
-    end
-  end
+  def pessoas_juridicas_repo(),
+    do: Repo.all(PessoaJuridica) |> Repo.preload([:pessoa, :enderecos])
 
   def load_pessoa_fisica_map(nil), do: nil
-  def load_pessoa_fisica_map(item), do:
-  %{
-    pessoa_id: item.pessoa.id,
-    nome: item.pessoa.nome,
-    data_nascimento: item.data_nascimento,
-    cpf: item.cpf
-  }
+
+  def load_pessoa_fisica_map(item),
+    do: %{
+      pessoa_id: item.pessoa.id,
+      nome: item.pessoa.nome,
+      data_nascimento: item.data_nascimento,
+      cpf: item.cpf
+    }
 
   def load_pessoa_juridica_map(nil), do: nil
-  def load_pessoa_juridica_map(item), do:
-  %{
-    pessoa_id: item.pessoa.id,
-    nome: item.pessoa.nome,
-    cnpj: item.cnpj,
-    endereco: %{
-      rua: item.enderecos.rua,
-      cep: item.enderecos.cep,
-      cidade: item.enderecos.cidade,
-      pais: item.enderecos.pais,
-      uf: item.enderecos.uf
+
+  def load_pessoa_juridica_map(item),
+    do: %{
+      pessoa_id: item.pessoa.id,
+      nome: item.pessoa.nome,
+      cnpj: item.cnpj,
+      endereco: %{
+        rua: item.enderecos.rua,
+        cep: item.enderecos.cep,
+        cidade: item.enderecos.cidade,
+        pais: item.enderecos.pais,
+        uf: item.enderecos.uf
+      }
     }
-  }
 
   def load_pessoas_fisicas(pessoas_fisicas_repo, partes) do
-    list = partes |> Enum.map(fn item ->
-      Enum.find(pessoas_fisicas_repo, &(&1.pessoa_id == item.pessoa.id))
-      |> load_pessoa_fisica_map()
-    end)
+    list =
+      partes
+      |> Enum.map(fn item ->
+        Enum.find(pessoas_fisicas_repo, &(&1.pessoa_id == item.pessoa.id))
+        |> load_pessoa_fisica_map()
+      end)
+
     Enum.reject(list, &is_nil/1)
   end
 
   def load_pessoas_juridicas(pessoas_juridicas_repo, partes) do
-    list = partes |> Enum.map(fn item ->
-      Enum.find(pessoas_juridicas_repo, &(&1.pessoa_id == item.pessoa.id))
-      |> load_pessoa_juridica_map()
-    end)
+    list =
+      partes
+      |> Enum.map(fn item ->
+        Enum.find(pessoas_juridicas_repo, &(&1.pessoa_id == item.pessoa.id))
+        |> load_pessoa_juridica_map()
+      end)
+
     Enum.reject(list, &is_nil/1)
   end
 
+  def list_contratos_por_filtro(pessoa_id, nil) do
+    IO.puts("LISTAGEM POR ASDASDASDAS =====================")
+
+    pessoas_fisicas = pessoas_fisicas_repo()
+    pessoas_juridicas = pessoas_juridicas_repo()
+
+    Repo.all(
+      from u in Contrato,
+        join: partes in assoc(u, :partes_contrato),
+        where: partes.pessoa_id == ^pessoa_id,
+        preload: [{:partes_contrato, :pessoa}, :uploads]
+    )
+    |> get_partes_for_contrato(pessoas_fisicas, pessoas_juridicas)
+  end
+
+  def list_contratos_por_filtro(nil, data) do
+    IO.puts("---------------------------- TESTAMDP CP, DATA")
+    pessoas_fisicas = pessoas_fisicas_repo()
+    pessoas_juridicas = pessoas_juridicas_repo()
+
+    Repo.all(
+      from u in Contrato,
+        join: partes in assoc(u, :partes_contrato),
+        where: u.data == ^data,
+        preload: [{:partes_contrato, :pessoa}, :uploads]
+    )
+    |> get_partes_for_contrato(pessoas_fisicas, pessoas_juridicas)
+  end
+
+  def list_contratos_por_filtro(pessoa_id, data) do
+    IO.puts("LISTAGEM POR DATA =====================")
+
+    pessoas_fisicas = pessoas_fisicas_repo()
+    pessoas_juridicas = pessoas_juridicas_repo()
+
+    Repo.all(
+      from u in Contrato,
+        join: partes in assoc(u, :partes_contrato),
+        where: partes.pessoa_id == ^pessoa_id and u.data == ^data,
+        preload: [{:partes_contrato, :pessoa}, :uploads]
+    )
+    |> get_partes_for_contrato(pessoas_fisicas, pessoas_juridicas)
+  end
+
+  def list_contratos(%{"pessoa_id" => pessoa_id, "data" => data}),
+    do: {:ok, list_contratos_por_filtro(pessoa_id, data)}
+
+  def list_contratos(%{"pessoa_id" => pessoa_id}),
+    do: {:ok, list_contratos_por_filtro(pessoa_id, nil)}
+
+  def list_contratos(%{"data" => data}), do: {:ok, list_contratos_por_filtro(nil, data)}
+
   def list_contratos do
     # 1. Obtem todos as pessoas fisicas e armazena em memoria
-    pessoas_fisicas = pessoas_fisicas()
-    pessoas_juridicas = pessoas_juridicas()
+    pessoas_fisicas = pessoas_fisicas_repo()
+    pessoas_juridicas = pessoas_juridicas_repo()
 
-    contratos =
-      Repo.all(
-        from u in Contrato,
-          preload: [{:partes_contrato, :pessoa}, :uploads]
-      )
+    {:ok,
+     Repo.all(
+       from u in Contrato,
+         preload: [{:partes_contrato, :pessoa}, :uploads]
+     )
+     |> get_partes_for_contrato(pessoas_fisicas, pessoas_juridicas)}
+  end
 
+  defp get_partes_for_contrato(contratos, pessoas_fisicas, pessoas_juridicas) do
     contratos
     |> Enum.map(fn contrato ->
       %{
@@ -108,25 +155,10 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
         partes: %{
           pessoas_fisicas: load_pessoas_fisicas(pessoas_fisicas, contrato.partes_contrato),
           pessoas_juridicas: load_pessoas_juridicas(pessoas_juridicas, contrato.partes_contrato)
-        }
-        # contrato.partes_contrato
-        # |> Enum.map(fn item ->
-        #   load_parte(pessoas_fisicas, item.pessoa)
-        # end)
+        },
+        arquivo: contrato.uploads.filename
       }
-
-      # {:ok, partes_test} =
-      #   contrato.partes_contrato
-      #   |> Enum.map(fn item ->
-      #     load_parte(pessoas_fisicas, pessoas_juridicas, item.pessoa)
-      #   end)
     end)
-
-    # contratos
-    # |> case do
-    #   nil -> []
-    #   _ -> Logger.debug("a1237129837198273917239812--------------------")
-    # end
   end
 
   @doc """

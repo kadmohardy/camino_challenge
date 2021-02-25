@@ -3,9 +3,12 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
 
   alias CaminoChallenge.PessoasFisicas.Entities.PessoaFisica
   alias CaminoChallenge.PessoasFisicas.Repositories.PessoaFisicaRepository
+  alias CaminoChallenge.PessoaFisicaFixture
 
   def fixture(:pessoa_fisica) do
-    {:ok, pessoa_fisica} = PessoaFisicaRepository.create_pessoa_fisica(@create_attrs)
+    {:ok, pessoa_fisica} =
+      PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica())
+
     pessoa_fisica
   end
 
@@ -21,27 +24,19 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
   end
 
   describe "create pessoa_fisica" do
-    test "renders pessoa_fisica when data is valid", %{conn: conn} do
-      conn =
-        post(conn, Routes.api_pessoa_fisica_path(conn, :create), pessoa_fisica: @create_attrs)
+    test "testing create contrato with valid attrs", %{conn: conn} do
+      api_conn =
+        conn
+        |> post("/api/pessoas/fisicas", pessoa_fisica: PessoaFisicaFixture.valid_pessoa_fisica())
 
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      body = api_conn |> response(201) |> Poison.decode!()
 
-      conn = get(conn, Routes.api_pessoa_fisica_path(conn, :show, id))
+      response = body["data"]
 
-      assert %{
-               "id" => id,
-               "cpf" => "some cpf",
-               "data_nascimento" => "2010-04-17",
-               "nome" => "some nome"
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn =
-        post(conn, Routes.api_pessoa_fisica_path(conn, :create), pessoa_fisica: @invalid_attrs)
-
-      assert json_response(conn, 422)["errors"] != %{}
+      assert response["cpf"] == "12345678910"
+      assert response["nome"] == "some nome"
+      assert response["data_nascimento"] == "2010-04-17"
+      assert response["tipo"] == "fisica"
     end
   end
 

@@ -14,7 +14,7 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaView do
     %{
       id: pessoa_fisica.pessoa_id,
       nome: pessoa_fisica.pessoa.nome,
-      type: pessoa_fisica.pessoa.type,
+      tipo: pessoa_fisica.pessoa.type,
       cpf: pessoa_fisica.cpf,
       data_nascimento: pessoa_fisica.data_nascimento
     }
