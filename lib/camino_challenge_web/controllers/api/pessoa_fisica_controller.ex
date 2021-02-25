@@ -20,9 +20,4 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaController do
       |> render("show.json", pessoa_fisica: pessoa_fisica)
     end
   end
-
-  # def show(conn, %{"id" => id}) do
-  #   pessoa_fisica = PessoaFisicaRepository.get_pessoa_fisica!(id)
-  #   render(conn, "show.json", pessoa_fisica: pessoa_fisica)
-  # end
 end

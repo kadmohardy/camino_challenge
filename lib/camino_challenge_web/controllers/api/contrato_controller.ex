@@ -10,6 +10,7 @@ defmodule CaminoChallengeWeb.Api.ContratoController do
 
   def index(conn, _params) do
     contratos = ContratoRepository.list_contratos()
+    Logger.info(contratos)
     render(conn, "index.json", contratos: contratos)
   end
 

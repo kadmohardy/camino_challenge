@@ -46,15 +46,6 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
     |> String.downcase()
   end
 
-  # def local_path(id, filename) do
-  #   [upload_directory, "#{id}-#{filename}"]
-  #   |> Path.join()
-  # end
-
-  # def upload_directory do
-  #   Application.get_env(:camino_challenge, :uploads_directory)
-  # end
-
   defp rename_to_unique(
          %{
            "filename" => filename,
