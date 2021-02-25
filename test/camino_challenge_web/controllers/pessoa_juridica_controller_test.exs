@@ -3,7 +3,7 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaControllerTest do
 
   alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
   alias CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository
-  alias CaminoChallenge.PessoaJuridicaFixture
+  alias CaminoChallenge.Fixtures.PessoaJuridicaFixture
 
   def fixture(:pessoa_juridica) do
     {:ok, pessoa_juridica} =
@@ -26,7 +26,7 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaControllerTest do
   end
 
   describe "create pessoa_juridica" do
-    test "testing create contrato with valid attrs", %{conn: conn} do
+    test "testing create jurifica with valid attrs", %{conn: conn} do
       api_conn =
         conn
         |> post("/api/pessoas/juridicas",
@@ -39,16 +39,6 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaControllerTest do
 
       assert response["cnpj"] == "123456789104321"
       assert response["nome"] == "some nome"
-
-      # cnpj: "123456789104321",
-      # nome: "some nome",
-      # endereco: %{
-      #   cep: "12345450",
-      #   cidade: "Sobral",
-      #   uf: "CE",
-      #   pais: "Brasil",
-      #   rua: "Rua Um, 21"
-      # }
     end
   end
 

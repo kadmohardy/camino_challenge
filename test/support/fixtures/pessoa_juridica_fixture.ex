@@ -1,4 +1,4 @@
-defmodule CaminoChallenge.PessoaJuridicaFixture do
+defmodule CaminoChallenge.Fixtures.PessoaJuridicaFixture do
   def valid_pessoa_juridica,
     do: %{
       cnpj: "123456789104321",

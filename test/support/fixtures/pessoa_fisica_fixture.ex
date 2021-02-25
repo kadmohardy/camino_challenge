@@ -1,4 +1,4 @@
-defmodule CaminoChallenge.PessoaFisicaFixture do
+defmodule CaminoChallenge.Fixtures.PessoaFisicaFixture do
   def valid_pessoa_fisica,
     do: %{
       cpf: "12345678910",

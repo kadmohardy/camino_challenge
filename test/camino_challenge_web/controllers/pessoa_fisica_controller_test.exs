@@ -3,7 +3,7 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
 
   alias CaminoChallenge.PessoasFisicas.Entities.PessoaFisica
   alias CaminoChallenge.PessoasFisicas.Repositories.PessoaFisicaRepository
-  alias CaminoChallenge.PessoaFisicaFixture
+  alias CaminoChallenge.Fixtures.PessoaFisicaFixture
 
   def fixture(:pessoa_fisica) do
     {:ok, pessoa_fisica} =
@@ -24,7 +24,7 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
   end
 
   describe "create pessoa_fisica" do
-    test "testing create contrato with valid attrs", %{conn: conn} do
+    test "testing create pessoa fisica with valid attrs", %{conn: conn} do
       api_conn =
         conn
         |> post("/api/pessoas/fisicas", pessoa_fisica: PessoaFisicaFixture.valid_pessoa_fisica())
