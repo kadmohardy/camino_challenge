@@ -1,6 +1,6 @@
 defmodule CaminoChallenge.Validations do
   def valid_uuid?(id) do
-    case Ecto.UUID.dump(id) do
+    case Ecto.UUID.cast(id) do
       {:ok, _uuid} -> true
       _ -> false
     end

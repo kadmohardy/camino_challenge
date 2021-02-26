@@ -66,21 +66,5 @@ defmodule CaminoChallenge.ContratosTest do
       {:ok, contrato} = ContratoRepository.list_contratos(%{})
       assert contrato |> Enum.count() == 1
     end
-
-    test "create_contrato with invalid data" do
-      pessoa = pessoa_fixture()
-
-      {:ok, contrato} = ContratoRepository.create_contrato(%{
-        nome: "some name",
-        descricao: "some description",
-        arquivo: %Plug.Upload{
-          path: "test/support/fixtures/files/desafio.pdf",
-          content_type: "application/pdf",
-          filename: "desafio.pdf"
-        },
-        data: "2018-04-23",
-        partes: pessoa.id
-      })
-    end
   end
 end

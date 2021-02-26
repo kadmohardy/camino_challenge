@@ -1,4 +1,7 @@
 defmodule CaminoChallenge.Contratos.Entities.Contrato do
+  @moduledoc """
+    Module relativo a entidade de contrato
+  """
   use Ecto.Schema
   use Arc.Ecto.Schema
 
@@ -19,7 +22,15 @@ defmodule CaminoChallenge.Contratos.Entities.Contrato do
     timestamps()
   end
 
-  @doc false
+  @doc """
+  A função `changeset/2` filtra, valida e define as restrições quando manipula-se
+  estruturas de contrato
+
+  ##  Parâmetros da função
+  - nome: nome do contrato
+  - descricao: descrição do contrato
+  - data: data da realização do contrato
+  """
   def changeset(contrato, attrs) do
     contrato
     |> cast(attrs, [:nome, :descricao, :data])

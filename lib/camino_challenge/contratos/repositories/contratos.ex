@@ -1,6 +1,6 @@
 defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
   @moduledoc """
-  The Contratos context.
+    Representa o repositorio da entidade contrato.
   """
   import Ecto.Query, warn: false
 

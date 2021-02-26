@@ -2,75 +2,107 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
   use CaminoChallengeWeb.ConnCase
 
   alias CaminoChallenge.Contratos.Entities.Contrato
+  alias CaminoChallenge.Contratos.Repositories.ContratoRepository
   alias CaminoChallenge.Contratos.Services.ListContratos
   alias CaminoChallenge.Fixtures.PessoaFisicaFixture
+  alias CaminoChallenge.Fixtures.PessoaJuridicaFixture
+
   alias CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository
+  alias CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository
 
   def fixture(:contrato) do
     {:ok, pessoa_fisica} =
-          PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica())
+      PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica())
 
-    {:ok, contrato} = CreateContrato.execute(%{
-      nome: "some name",
-      descricao: "some description",
-      data: "2020-09-24",
-      arquivo: %Plug.Upload{
-        path: "test/support/fixtures/files/desafio.pdf",
-        content_type: "application/pdf",
-        filename: "desafio.pdf"
-      },
-      partes: pessoa_fisica.pessoa_id
-    })
+    {:ok, contrato} =
+      ContratoRepository.create_contrato(%{
+        nome: "some name",
+        descricao: "some description",
+        data: "2020-09-24",
+        arquivo: %Plug.Upload{
+          path: "test/support/fixtures/files/desafio.pdf",
+          content_type: "application/pdf",
+          filename: "desafio.pdf"
+        },
+        partes: pessoa_fisica.pessoa_id
+      })
 
-    contrato
+    {:ok, contrato2} =
+      ContratoRepository.create_contrato(%{
+        nome: "some name 2",
+        descricao: "some description 2",
+        data: "2020-09-25",
+        arquivo: %Plug.Upload{
+          path: "test/support/fixtures/files/desafio.pdf",
+          content_type: "application/pdf",
+          filename: "desafio.pdf"
+        },
+        partes: pessoa_fisica.pessoa_id
+      })
+
+    pessoa_fisica
   end
 
   setup %{conn: conn} do
+    fixture(:contrato)
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  describe "index" do
+  describe "test contratos" do
     test "lists all contratos", %{conn: conn} do
-    {:ok, pessoa_fisica} =
-      PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica())
-        api_conn =
-            conn
-            |> post("/api/contratos", %{
-                nome: "some name",
-                descricao: "some description",
-                data: "2020-09-24",
-                arquivo: %Plug.Upload{
-                  path: "test/support/fixtures/files/desafio.pdf",
-                  content_type: "application/pdf",
-                  filename: "desafio.pdf"
-                },
-                partes: pessoa_fisica.pessoa_id
-              })
+      api_conn =
+        conn
+        |> get("/api/contratos")
 
-      conn_index = get(conn, Routes.api_contrato_path(conn, :index))
-      assert json_response(conn_index, 200)["data"] |> Enum.count() == 1
+      body = api_conn |> response(200) |> Poison.decode!()
+      item = body["data"] |> Enum.at(0)
+      assert body["data"] |> Enum.count() == 2
 
+      assert item["data"] == "2020-09-24"
+      assert item["descricao"] == "some description"
+      assert item["nome"] == "some name"
+
+      pessoas_fisicas = item["partes"]["pessoas_fisicas"]
+      pessoas_juridicas = item["partes"]["pessoas_juridicas"]
+
+      #      IO.puts pessoas_fisicas["cpf"]
+      # assert pessoas_fisicas[:cpf] == "65330503035"
+      # assert pessoas_fisicas[:data_nascimento] == "2010-04-17"
+      # assert pessoas_fisicas[:nome] == "some name"
+      # assert pessoas_fisicas[:pessoa_id] == "e060643c-0741-43b4-80c9-ab7c5bcae0a6"
+      # assert partes.pessoas_juridicas == []
     end
-  end
 
-  describe "create contrato" do
+    test "listando contratos por filtro", %{conn: conn} do
+      api_conn =
+        conn
+        |> get("/api/contratos", %{data: "2020-09-24"})
+      body = api_conn |> response(200) |> Poison.decode!()
+      assert body["data"] |> Enum.count() == 1
+    end
+
     test "testing create contrato with valid attrs", %{conn: conn} do
-    {:ok, pessoa_fisica} =
-      PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica())
+      {:ok, pessoa_fisica} =
+        PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica_2())
 
-     api_conn =
+      {:ok, pessoa_juridica} =
+        PessoaJuridicaRepository.create_pessoa_juridica(
+          PessoaJuridicaFixture.valid_pessoa_juridica_2()
+        )
+
+      api_conn =
         conn
         |> post("/api/contratos", %{
-            nome: "some name",
-            descricao: "some description",
-            data: "2020-09-24",
-            arquivo: %Plug.Upload{
-              path: "test/support/fixtures/files/desafio.pdf",
-              content_type: "application/pdf",
-              filename: "desafio.pdf"
-            },
-            partes: pessoa_fisica.pessoa_id
-          })
+          nome: "some name",
+          descricao: "some description",
+          data: "2020-09-24",
+          arquivo: %Plug.Upload{
+            path: "test/support/fixtures/files/desafio.pdf",
+            content_type: "application/pdf",
+            filename: "desafio.pdf"
+          },
+          partes: pessoa_fisica.pessoa_id
+        })
 
       body = api_conn |> response(201) |> Poison.decode!()
 
@@ -79,7 +111,46 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
       assert response["data"] == "2020-09-24"
       assert response["descricao"] == "some description"
       assert response["nome"] == "some name"
+    end
 
+    test "testing create contrato with invalid attrs", %{conn: conn} do
+      {:ok, pessoa_fisica} =
+        PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica_2())
+
+      api_conn =
+        conn
+        |> post("/api/contratos", %{})
+
+      body = api_conn |> response(422) |> Poison.decode!()
+
+      response = body["errors"]
+
+      assert response["arquivo"] == ["can't be blank"]
+      assert response["data"] == ["can't be blank"]
+      assert response["nome"] == ["can't be blank"]
+      assert response["descricao"] == ["can't be blank"]
+      assert response["partes"] == ["A lista não corresponde a UUIDs validos", "can't be blank"]
+    end
+
+    test "testing create contrato with invalid partes", %{conn: conn} do
+      api_conn =
+        conn
+        |> post("/api/contratos", %{
+          nome: "some name",
+          descricao: "some description",
+          data: "2020-09-24",
+          arquivo: %Plug.Upload{
+            path: "test/support/fixtures/files/desafio.pdf",
+            content_type: "application/pdf",
+            filename: "desafio.pdf"
+          },
+          partes: nil
+        })
+
+      body = api_conn |> response(422) |> Poison.decode!()
+
+      response = body["errors"]
+      assert response["partes"] == ["A lista não corresponde a UUIDs validos", "can't be blank"]
     end
   end
 

@@ -1,4 +1,8 @@
 defmodule CaminoChallenge.Contratos.Entities.Upload do
+  @moduledoc """
+    Module relativo a entidade de Upload que é representa o arquivo do tipo
+    pdf anexado ao contrato.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use Arc.Definition
@@ -33,17 +37,6 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
     |> validate_required([:arquivo, :filename, :content_type])
     |> validate_number(:size, greater_than: 0)
     |> validate_length(:hash, is: 64)
-  end
-
-  def sha256(chunks_enum) do
-    chunks_enum
-    |> Enum.reduce(
-      :crypto.hash_init(:sha256),
-      &:crypto.hash_update(&2, &1)
-    )
-    |> :crypto.hash_final()
-    |> Base.encode16()
-    |> String.downcase()
   end
 
   defp rename_to_unique(
