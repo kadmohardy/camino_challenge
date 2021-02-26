@@ -1,4 +1,4 @@
-defmodule CaminoChallenge.Uploders.Pdf do
+defmodule CaminoChallenge.Uploaders.Pdf do
   use Arc.Definition
   use Arc.Ecto.Definition
 

@@ -149,42 +149,6 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
     end)
   end
 
-  @doc """
-  Gets a single contrato.
-
-  Raises `Ecto.NoResultsError` if the Contrato does not exist.
-
-  ## Examples
-
-      iex> get_contrato!(123)
-      %Contrato{}
-
-      iex> get_contrato!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_contrato!(id), do: Repo.get!(Contrato, id)
-
-  @doc """
-  Creates a contrato.
-
-  ## Examples
-
-      iex> create_contrato(%{field: value})
-      {:ok, %Contrato{}}
-
-      iex> create_contrato(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-
-  # def create_contrato(attrs \\ %{}) do
-  #   Logger.debug(attrs)
-  #   # %Contrato{}
-  #   # |> Contrato.changeset(attrs)
-  #   # |> Repo.insert()
-  # end
-
   def create_contrato(attrs \\ %{}) do
     nome = attrs["nome"] || attrs.nome
     descricao = attrs["descricao"] || attrs.descricao

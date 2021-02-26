@@ -27,7 +27,7 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
           PessoaJuridicaFixture.valid_pessoa_juridica()
         )
 
-      assert pessoa_juridica.cnpj == "123456789104321"
+      assert pessoa_juridica.cnpj == "75569839000144"
       assert pessoa_juridica.pessoa.nome == "some nome"
     end
 

@@ -16,7 +16,7 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
 
   def fixture(:contrato) do
     {:ok, pessoa_fisica} = CreateContrato.execute(PessoaFisicaFixture.valid_pessoa_fisica())
-    {:ok, pessoa_juridica} = CreateContrato.execute(PessoaFisicaFixture.valid_pessoa_juridica())
+    {:ok, pessoa_juridica} = CreateContrato.execute(PessoaJuridicaFixture.valid_pessoa_juridica())
 
     {:ok, contrato} = CreateContrato.execute(@create_attrs)
 

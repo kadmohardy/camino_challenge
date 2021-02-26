@@ -4,7 +4,8 @@
     "lib/camino_challenge/release.ex",
     "lib/camino_challenge_web.ex",
     "lib/camino_challenge_web/views/error_helpers.ex",
-    "test/support/channel_case.ex"
+    "test/support/channel_case.ex",
+    "lib/camino_challenge/repo.ex"
   ],
   "coverage_options": {
     "treat_no_relevant_line_as_covered": true,

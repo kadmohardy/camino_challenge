@@ -23,22 +23,6 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
   end
 
   @doc """
-  Gets a single pessoa_fisica.
-
-  Raises `Ecto.NoResultsError` if the Pessoa fisica does not exist.
-
-  ## Examples
-
-      iex> get_pessoa_fisica!(123)
-      %PessoaFisica{}
-
-      iex> get_pessoa_fisica!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_pessoa_fisica!(id), do: Repo.get!(PessoaFisica, id)
-
-  @doc """
   Creates a pessoa_fisica.
 
   ## Examples

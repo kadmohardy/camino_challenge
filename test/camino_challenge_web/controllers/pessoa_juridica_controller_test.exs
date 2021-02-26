@@ -52,7 +52,10 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaControllerTest do
 
       response = body["errors"]
 
-      assert response["cnpj"] == ["CNPJ inválido", "CNPJ deve ter 14 caracteress. Siga o formato XXXXXXXXXXX"]
+      assert response["cnpj"] == [
+               "CNPJ inválido",
+               "CNPJ deve ter 14 caracteress. Siga o formato XXXXXXXXXXX"
+             ]
     end
   end
 

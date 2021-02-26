@@ -10,7 +10,7 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Phoenix.Param, key: :id}
   schema "uploads" do
-    field :arquivo, CaminoChallenge.Uploders.Pdf.Type
+    field :arquivo, CaminoChallenge.Uploaders.Pdf.Type
     field :filename, :string
     field :content_type, :string
     field :hash, :string

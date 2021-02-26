@@ -19,4 +19,14 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaView do
       }
     }
   end
+
+  def render("pessoa_juridica.json", %{pessoa_juridica: pessoa_juridica}) do
+    %{
+      id: pessoa_juridica.pessoa_id,
+      nome: pessoa_juridica.pessoa.nome,
+      tipo: pessoa_juridica.pessoa.type,
+      cnpj: pessoa_juridica.cnpj,
+      endereco: render_one(pessoa_juridica.enderecos, EnderecoView, "endereco.json")
+    }
+  end
 end

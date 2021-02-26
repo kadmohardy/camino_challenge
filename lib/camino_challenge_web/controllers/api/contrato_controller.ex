@@ -2,14 +2,13 @@ defmodule CaminoChallengeWeb.Api.ContratoController do
   use CaminoChallengeWeb, :controller
 
   alias CaminoChallenge.Api.Params.ContratoParams
-  alias CaminoChallenge.Contratos.Services.CreateContrato
-  alias CaminoChallenge.Contratos.Services.ListContratos
+  alias CaminoChallenge.Contratos.Repositories.ContratoRepository
 
   require Logger
   action_fallback CaminoChallengeWeb.FallbackController
 
   def index(conn, params) do
-    with {:ok, contratos} <- ListContratos.execute(params) do
+    with {:ok, contratos} <- ContratoRepository.list_contratos(params) do
       conn
       |> render("index.json", contratos: contratos)
     end
@@ -19,7 +18,7 @@ defmodule CaminoChallengeWeb.Api.ContratoController do
     changeset = ContratoParams.from(params, with: &ContratoParams.child/2)
 
     if changeset.valid? do
-      with {:ok, {contrato, _arquivo}} <- CreateContrato.execute(params) do
+      with {:ok, {contrato, _arquivo}} <- ContratoRepository.create_contrato(params) do
         conn
         |> put_status(:created)
         |> render("show.json", contrato: contrato)

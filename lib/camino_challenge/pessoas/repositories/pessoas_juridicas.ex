@@ -23,22 +23,6 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository do
   end
 
   @doc """
-  Gets a single pessoa_juridica.
-
-  Raises `Ecto.NoResultsError` if the Pessoa juridica does not exist.
-
-  ## Examples
-
-      iex> get_pessoa_juridica!(123)
-      %PessoaJuridica{}
-
-      iex> get_pessoa_juridica!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_pessoa_juridica!(id), do: Repo.get!(PessoaJuridica, id)
-
-  @doc """
   Creates a pessoa_juridica.
 
   ## Examples

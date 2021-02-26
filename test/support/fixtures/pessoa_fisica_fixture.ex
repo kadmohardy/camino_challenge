@@ -7,5 +7,4 @@ defmodule CaminoChallenge.Fixtures.PessoaFisicaFixture do
     }
 
   def invalid_pessoa_fisica, do: %{cpf: "65330503035", data_nascimento: "nil", nome: "nil"}
-
 end

@@ -7,7 +7,7 @@ defmodule CaminoChallenge.Api.Params.ContratoParams do
     descricao: :string,
     partes: :string,
     data: :date,
-    arquivo: CaminoChallenge.Uploders.Pdf.Type
+    arquivo: CaminoChallenge.Uploaders.Pdf.Type
   }
 
   import Ecto.Changeset
