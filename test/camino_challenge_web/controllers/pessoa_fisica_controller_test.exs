@@ -52,8 +52,4 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
     end
   end
 
-  defp create_pessoa_fisica(_) do
-    pessoa_fisica = fixture(:pessoa_fisica)
-    %{pessoa_fisica: pessoa_fisica}
-  end
 end

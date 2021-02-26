@@ -2,8 +2,7 @@ defmodule CaminoChallenge.ContratosTest do
   use CaminoChallenge.DataCase
 
   alias CaminoChallenge.Contratos.Repositories.ContratoRepository
-  alias CaminoChallenge.Fixtures.ContratoFixture
-  alias CaminoChallenge.Fixtures.PessoaFisicaFixture
+
   alias CaminoChallenge.Pessoas.Entities.Pessoa
 
   require Logger
@@ -14,8 +13,6 @@ defmodule CaminoChallenge.ContratosTest do
   }
 
   describe "contratos" do
-    alias CaminoChallenge.Contratos.Entities.Contrato
-
     @valid_attrs %{
       nome: "some name",
       descricao: "some description",
@@ -27,8 +24,6 @@ defmodule CaminoChallenge.ContratosTest do
       },
       partes: "a326ccad-9ae1-4fc6-940c-690661e37403,3311ee36-7057-4cfe-b803-0a5686d76668"
     }
-
-    @invalid_attrs %{}
 
     def contrato_fixture(attrs \\ %{}) do
       {:ok, contrato} =

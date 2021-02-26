@@ -42,7 +42,9 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
 
     Repo.get_by(PessoaFisica, cpf: cpf)
     |> case do
-      nil -> transaction_pessoa_fisica(nome, cpf, data_nascimento)
+      nil ->
+        transaction_pessoa_fisica(nome, cpf, data_nascimento)
+
       _ ->
         {:error, "Já existe um cadastro para este CPF."}
     end
@@ -62,12 +64,12 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
 
   def try_insert_pessoa_fisica(cpf, data_nascimento, pessoa) do
     case %PessoaFisica{}
-          |> PessoaFisica.changeset(%{
-            cpf: cpf,
-            data_nascimento: data_nascimento
-          })
-          |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
-          |> Repo.insert() do
+         |> PessoaFisica.changeset(%{
+           cpf: cpf,
+           data_nascimento: data_nascimento
+         })
+         |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
+         |> Repo.insert() do
       {:ok, pessoa_fisica} -> pessoa_fisica
       {:error, changeset} -> Repo.rollback(changeset)
     end

@@ -1,9 +1,7 @@
 defmodule CaminoChallengeWeb.ContratoControllerTest do
   use CaminoChallengeWeb.ConnCase
 
-  alias CaminoChallenge.Contratos.Entities.Contrato
   alias CaminoChallenge.Contratos.Repositories.ContratoRepository
-  alias CaminoChallenge.Contratos.Services.ListContratos
   alias CaminoChallenge.Fixtures.PessoaFisicaFixture
   alias CaminoChallenge.Fixtures.PessoaJuridicaFixture
 
@@ -14,7 +12,6 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
     {:ok, pessoa_fisica} =
       PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica())
 
-    {:ok, contrato} =
       ContratoRepository.create_contrato(%{
         nome: "some name",
         descricao: "some description",
@@ -27,7 +24,6 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
         partes: pessoa_fisica.pessoa_id
       })
 
-    {:ok, contrato2} =
       ContratoRepository.create_contrato(%{
         nome: "some name 2",
         descricao: "some description 2",
@@ -61,24 +57,33 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
       assert item["data"] == "2020-09-24"
       assert item["descricao"] == "some description"
       assert item["nome"] == "some name"
-
-      pessoas_fisicas = item["partes"]["pessoas_fisicas"]
-      pessoas_juridicas = item["partes"]["pessoas_juridicas"]
-
-      #      IO.puts pessoas_fisicas["cpf"]
-      # assert pessoas_fisicas[:cpf] == "65330503035"
-      # assert pessoas_fisicas[:data_nascimento] == "2010-04-17"
-      # assert pessoas_fisicas[:nome] == "some name"
-      # assert pessoas_fisicas[:pessoa_id] == "e060643c-0741-43b4-80c9-ab7c5bcae0a6"
-      # assert partes.pessoas_juridicas == []
     end
 
-    test "listando contratos por filtro", %{conn: conn} do
+    test "listando contratos por filtro de data", %{conn: conn} do
       api_conn =
         conn
         |> get("/api/contratos", %{data: "2020-09-24"})
+
       body = api_conn |> response(200) |> Poison.decode!()
       assert body["data"] |> Enum.count() == 1
+    end
+
+    test "listando contratos por filtro de pessoa_id", %{conn: conn} do
+      api_conn =
+        conn
+        |> get("/api/contratos", %{pessoa_id: "95827e2e-3457-471e-8a61-92a1cf6c4cfa"})
+
+      body = api_conn |> response(200) |> Poison.decode!()
+      assert body["data"] |> Enum.count() == 0
+    end
+
+     test "listando contratos por filtro", %{conn: conn} do
+      api_conn =
+        conn
+        |> get("/api/contratos", %{data: "2020-09-24", pessoa_id: "95827e2e-3457-471e-8a61-92a1cf6c4cfa"})
+
+      body = api_conn |> response(200) |> Poison.decode!()
+      assert body["data"] |> Enum.count() == 0
     end
 
     test "testing create contrato with valid attrs", %{conn: conn} do
@@ -152,10 +157,5 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
       response = body["errors"]
       assert response["partes"] == ["A lista não corresponde a UUIDs validos", "can't be blank"]
     end
-  end
-
-  defp create_contrato(_) do
-    contrato = fixture(:contrato)
-    %{contrato: contrato}
   end
 end

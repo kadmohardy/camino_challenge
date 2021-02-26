@@ -180,17 +180,18 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
 
   def try_insert_upload(contrato, arquivo) do
     case contrato
-      |> Ecto.build_assoc(:uploads)
-      |> Upload.changeset(%{
-        "arquivo" => arquivo,
-        "filename" => arquivo.filename,
-        "content_type" => arquivo.content_type
-      })
-      |> Repo.insert() do
+         |> Ecto.build_assoc(:uploads)
+         |> Upload.changeset(%{
+           "arquivo" => arquivo,
+           "filename" => arquivo.filename,
+           "content_type" => arquivo.content_type
+         })
+         |> Repo.insert() do
       {:ok, upload} -> upload
       {:error, changeset} -> Repo.rollback(changeset)
     end
   end
+
   def try_insert_partes_contrato(pessoa_id, contrato_id) do
     case %PartesContrato{}
          |> PartesContrato.changeset(%{
