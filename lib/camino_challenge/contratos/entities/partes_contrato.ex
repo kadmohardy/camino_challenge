@@ -2,8 +2,8 @@ defmodule CaminoChallenge.Contratos.Entities.PartesContrato do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias CaminoChallenge.Pessoas.Entities.Pessoa
   alias CaminoChallenge.Contratos.Entities.Contrato
+  alias CaminoChallenge.Pessoas.Entities.Pessoa
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Phoenix.Param, key: :id}

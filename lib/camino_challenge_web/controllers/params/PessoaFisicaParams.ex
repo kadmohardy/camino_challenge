@@ -9,10 +9,24 @@ defmodule CaminoChallenge.Api.Params.PessoaFisicaParams do
   import Ecto.Changeset
 
   def child(ch, params) do
-    IO.puts "validating paras =--=12-31=2-31=2-312=3-1=2-31-23"
     ch
     |> cast(params, [:nome, :cpf, :data_nascimento])
     |> validate_required([:nome, :cpf, :data_nascimento])
-    |> validate_length(:cpf, min: 11, max: 11, message: "CPF deve ter 11 caracteress. Siga o formato XXXXXXXXXXX")
+    |> validate_length(:cpf,
+      min: 11,
+      max: 11,
+      message: "CPF deve ter 11 caracteress. Siga o formato XXXXXXXXXXX"
+    )
+    |> validate_cpf_is_valid()
+  end
+
+  defp validate_cpf_is_valid(changeset) do
+    cpf_value = %Cpf{number: get_field(changeset, :cpf)}
+
+    if Brcpfcnpj.cpf_valid?(cpf_value) do
+      changeset
+    else
+      add_error(changeset, :cpf, "CPF inválido")
+    end
   end
 end

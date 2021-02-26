@@ -48,7 +48,7 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
 
   defp rename_to_unique(
          %{
-           "filename" => filename,
+           "filename" => _filename,
            "content_type" => content_type,
            "arquivo" => %Plug.Upload{filename: name, content_type: content_type} = arquivo
          } = attrs
@@ -63,12 +63,5 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
     arquivo = %Plug.Upload{arquivo | filename: encrypyted_name <> "." <> type}
 
     %{attrs | "arquivo" => arquivo, "filename" => encrypyted_name <> "." <> type}
-  end
-
-  defp get_type(
-         %{"arquivo" => %Plug.Upload{filename: name, content_type: content_type} = arquivo} =
-           attrs
-       ) do
-    Enum.at(String.split(content_type, "/"), 1)
   end
 end

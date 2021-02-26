@@ -1,10 +1,10 @@
 defmodule CaminoChallenge.ContratosTest do
   use CaminoChallenge.DataCase
 
-  alias CaminoChallenge.Contratos
+  alias CaminoChallenge.Contratos.Repositories.ContratoRepository
 
   describe "contratos" do
-    alias CaminoChallenge.Contratos.Contrato
+    alias CaminoChallenge.Contratos.Entities.Contrato
 
     @valid_attrs %{
       data: ~D[2010-04-17],

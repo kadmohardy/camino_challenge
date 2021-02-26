@@ -1,7 +1,7 @@
 defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
   use CaminoChallenge.DataCase
 
-  alias CaminoChallenge.PessoaJuridicaFixture
+  alias CaminoChallenge.Fixtures.PessoaJuridicaFixture
 
   describe "pessoas_juridicas" do
     alias CaminoChallenge.Pessoas.Entities.PessoaJuridica

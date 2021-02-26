@@ -3,7 +3,7 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaController do
   alias CaminoChallenge.Api.Params.PessoaFisicaParams
   alias CaminoChallenge.Pessoas.Entities.PessoaFisica
   alias CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository
-  alias CaminoChallenge.Pessoas.Services.CreatePessoaJuridica
+  alias CaminoChallenge.Pessoas.Services.CreatePessoaFisica
   require Logger
   action_fallback CaminoChallengeWeb.FallbackController
 
@@ -17,16 +17,16 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaController do
 
     if changeset.valid? do
       with {:ok, %PessoaFisica{} = pessoa_fisica} <-
-             CreatePessoaJuridica.execute(pessoa_fisica_params) do
+             CreatePessoaFisica.execute(pessoa_fisica_params) do
         conn
         |> put_status(:created)
         |> render("show.json", pessoa_fisica: pessoa_fisica)
       end
     else
       conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(CaminoChallengeWeb.ChangesetView)
-        |> render("error.json", changeset: changeset)
+      |> put_status(:unprocessable_entity)
+      |> put_view(CaminoChallengeWeb.ChangesetView)
+      |> render("error.json", changeset: changeset)
     end
   end
 end

@@ -1,11 +1,9 @@
 defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
   use CaminoChallengeWeb, :controller
-
-  alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
+  alias CaminoChallenge.Api.Params.PessoaJuridicaParams
   alias CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository
   alias CaminoChallenge.Pessoas.Services.CreatePessoaJuridica
 
-  require Logger
   action_fallback CaminoChallengeWeb.FallbackController
 
   def index(conn, _params) do
@@ -14,11 +12,21 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
   end
 
   def create(conn, %{"pessoa_juridica" => pessoa_juridica_params}) do
-    with {:ok, {pessoa_juridica, endereco}} <-
-           CreatePessoaJuridica.create_pessoa_juridica(pessoa_juridica_params) do
+    changeset =
+      PessoaJuridicaParams.from(pessoa_juridica_params, with: &PessoaJuridicaParams.child/2)
+
+    if changeset.valid? do
+      with {:ok, {pessoa_juridica, endereco}} <-
+             CreatePessoaJuridica.execute(pessoa_juridica_params) do
+        conn
+        |> put_status(:created)
+        |> render("create.json", pessoa_juridica: pessoa_juridica, endereco: endereco)
+      end
+    else
       conn
-      |> put_status(:created)
-      |> render("create.json", pessoa_juridica: pessoa_juridica, endereco: endereco)
+      |> put_status(:unprocessable_entity)
+      |> put_view(CaminoChallengeWeb.ChangesetView)
+      |> render("error.json", changeset: changeset)
     end
   end
 end

@@ -1,15 +1,83 @@
-defmodule CaminoChallengeWeb.ErrorViewTest do
+defmodule CaminoChallengeWeb.UserViewTest do
   use CaminoChallengeWeb.ConnCase, async: true
-
-  # Bring render/3 and render_to_string/3 for testing custom views
   import Phoenix.View
+  require Logger
+  alias CaminoChallenge.Pessoas.Entities.PessoaFisica
 
-  test "renders 404.html" do
-    assert render_to_string(CaminoChallengeWeb.ErrorView, "404.html", []) == "Not Found"
+  test "renders index.json", %{conn: conn} do
+    users = [
+      %StoneChallenge.Accounts.User{
+        id: "dc198650-4a44-41e6-ad92-e7b42ab9dead",
+        email: "user1@gmail.com",
+        first_name: "User1",
+        last_name: "Test1",
+        role: "customer",
+        accounts: %StoneChallenge.Accounts.Account{
+          id: "5cd95c73-f522-4bd9-935c-70643052cd88",
+          balance: 1000.00
+        }
+      },
+      %StoneChallenge.Accounts.User{
+        id: "35b27696-e329-426b-a47e-03c42c1ef7a8",
+        email: "user2@gmail.com",
+        first_name: "User2",
+        last_name: "Test2",
+        role: "customer",
+        accounts: %StoneChallenge.Accounts.Account{
+          id: "4d41121d-fb2f-4895-abe4-818d2d8a4bf6",
+          balance: 1000.00
+        }
+      }
+    ]
+
+    rendered_users =
+      render(
+        StoneChallengeWeb.UserView,
+        "index.json",
+        conn: conn,
+        users: users
+      )
+
+    assert rendered_users == %{
+             data:
+               Enum.map(users, fn item -> StoneChallengeWeb.UserView.user_account_json(item) end)
+           }
   end
 
-  test "renders 500.html" do
-    assert render_to_string(CaminoChallengeWeb.ErrorView, "500.html", []) ==
-             "Internal Server Error"
+  test "renders account.json", %{conn: conn} do
+    {user, account} = {
+      %StoneChallenge.Accounts.User{
+        id: "dc198650-4a44-41e6-ad92-e7b42ab9dead",
+        email: "user1@gmail.com",
+        first_name: "User1",
+        last_name: "Test1",
+        role: "customer"
+      },
+      %StoneChallenge.Accounts.Account{
+        id: "5cd95c73-f522-4bd9-935c-70643052cd88",
+        balance: 1000.00
+      }
+    }
+
+    rendered_account =
+      render(
+        StoneChallengeWeb.UserView,
+        "account.json",
+        conn: conn,
+        account: account,
+        user: user
+      )
+
+    assert rendered_account.data == %{
+             account_id: account.id,
+             balance: account.balance,
+             user: %{
+               id: user.id,
+               email: user.email,
+               first_name: user.first_name,
+               last_name: user.last_name,
+               role: user.role
+             }
+           }
   end
 end
