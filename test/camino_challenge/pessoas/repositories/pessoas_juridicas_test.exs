@@ -36,6 +36,7 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
         PessoaJuridicaRepository.create_pessoa_juridica(
           PessoaJuridicaFixture.invalid_pessoa_juridica()
         )
+
       assert changeset.valid? == false
     end
   end

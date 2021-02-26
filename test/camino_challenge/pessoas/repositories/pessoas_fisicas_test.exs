@@ -17,7 +17,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoasFisicasTest do
     end
 
     test "list_pessoas_fisicas/0 returns all pessoas_fisicas" do
-      pessoa_fisica = pessoa_fisica_fixture()
+      pessoa_fisica_fixture()
       assert PessoaFisicaRepository.list_pessoas_fisicas() |> Enum.count() == 1
     end
 
@@ -31,6 +31,13 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoasFisicasTest do
       assert pessoa_fisica.data_nascimento == ~D[2010-04-17]
       assert pessoa_fisica.pessoa.nome == "some nome"
       assert pessoa_fisica.pessoa.type == "fisica"
+    end
+
+    test "create_pessoa_fisica/1 with invalid data returns error changeset" do
+     assert {:error, %Ecto.Changeset{}} =
+        PessoaFisicaRepository.create_pessoa_fisica(
+            PessoaFisicaFixture.invalid_pessoa_fisica()
+          )
     end
   end
 end

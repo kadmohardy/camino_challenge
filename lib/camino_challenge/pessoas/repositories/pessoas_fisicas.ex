@@ -50,16 +50,23 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
     |> case do
       nil ->
         Repo.transaction(fn ->
-          {:ok, pessoa} = Repo.insert(%Pessoa{nome: nome, type: "fisica"})
+          pessoa =
+            case Repo.insert(%Pessoa{nome: nome, type: "fisica"}) do
+              {:ok, pessoa} -> pessoa
+              {:error, changeset} -> Repo.rollback(changeset)
+            end
 
-          {:ok, pessoa_fisica} =
-            %PessoaFisica{}
-            |> PessoaFisica.changeset(%{
-              cpf: cpf,
-              data_nascimento: data_nascimento
-            })
-            |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
-            |> Repo.insert()
+          pessoa_fisica =
+            case %PessoaFisica{}
+                 |> PessoaFisica.changeset(%{
+                   cpf: cpf,
+                   data_nascimento: data_nascimento
+                 })
+                 |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
+                 |> Repo.insert() do
+              {:ok, pessoa_fisica} -> pessoa_fisica
+              {:error, changeset} -> Repo.rollback(changeset)
+            end
 
           pessoa_fisica
         end)
