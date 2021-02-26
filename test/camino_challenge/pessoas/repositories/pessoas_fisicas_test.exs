@@ -34,10 +34,10 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoasFisicasTest do
     end
 
     test "create_pessoa_fisica/1 with invalid data returns error changeset" do
-     assert {:error, %Ecto.Changeset{}} =
-        PessoaFisicaRepository.create_pessoa_fisica(
-            PessoaFisicaFixture.invalid_pessoa_fisica()
-          )
+      assert {:error, %Ecto.Changeset{}} =
+               PessoaFisicaRepository.create_pessoa_fisica(
+                 PessoaFisicaFixture.invalid_pessoa_fisica()
+               )
     end
   end
 end

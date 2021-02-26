@@ -182,21 +182,22 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
 
       ids_parts_list
       |> Enum.each(fn item ->
-        inserted_parte =
-          case %PartesContrato{}
-               |> PartesContrato.changeset(%{
-                 "pessoa_id" => item,
-                 "contrato_id" => contrato.id
-               })
-               |> Repo.insert() do
-            {:ok, parte} -> parte
-            {:error, changeset} -> Repo.rollback(changeset)
-          end
-
-        inserted_parte
+        try_insert_partes_contrato(item, contrato.id)
       end)
 
       {contrato, upload}
     end)
+  end
+
+  def try_insert_partes_contrato(pessoa_id, contrato_id) do
+    case %PartesContrato{}
+         |> PartesContrato.changeset(%{
+           "pessoa_id" => pessoa_id,
+           "contrato_id" => contrato_id
+         })
+         |> Repo.insert() do
+      {:ok, parte} -> parte
+      {:error, changeset} -> Repo.rollback(changeset)
+    end
   end
 end

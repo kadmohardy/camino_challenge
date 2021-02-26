@@ -1,7 +1,5 @@
 defmodule CaminoChallenge.Pessoas.Repositories.PessoasTest do
   use CaminoChallenge.DataCase
-  alias CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository
-  require Logger
 
   @pessoa_valid %{
     nome: "some nome",

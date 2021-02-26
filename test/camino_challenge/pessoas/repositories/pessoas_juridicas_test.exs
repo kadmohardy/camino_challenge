@@ -17,7 +17,7 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
     end
 
     test "list_pessoas_juridicas/0 returns all pessoas_juridicas" do
-      pessoa_juridica = pessoa_juridica_fixture()
+      pessoa_juridica_fixture()
       assert PessoaJuridicaRepository.list_pessoas_juridicas() |> Enum.count() == 1
     end
 
