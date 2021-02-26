@@ -1,4 +1,5 @@
 defmodule CaminoChallengeWeb.ChangesetView do
+  @moduledoc false
   use CaminoChallengeWeb, :view
 
   @doc """
