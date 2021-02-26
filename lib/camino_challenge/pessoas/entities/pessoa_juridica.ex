@@ -23,6 +23,7 @@ defmodule CaminoChallenge.Pessoas.Entities.PessoaJuridica do
     pessoa_juridica
     |> cast(attrs, [:cnpj])
     |> validate_required([:cnpj])
+    |> validate_length(:cnpj, min: 14, max: 14)
     |> cast_assoc(:enderecos, with: &Endereco.changeset/2)
     |> unique_constraint(:cnpj)
   end

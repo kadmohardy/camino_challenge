@@ -32,10 +32,11 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
     end
 
     test "create_pessoa_juridica/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} =
-               PessoaJuridicaRepository.create_pessoa_juridica(
-                 PessoaJuridicaFixture.invalid_pessoa_juridica()
-               )
+      {:error, %Ecto.Changeset{} = changeset} =
+        PessoaJuridicaRepository.create_pessoa_juridica(
+          PessoaJuridicaFixture.invalid_pessoa_juridica()
+        )
+      assert changeset.valid? == false
     end
   end
 end

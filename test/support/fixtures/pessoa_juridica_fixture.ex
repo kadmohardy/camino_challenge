@@ -14,8 +14,14 @@ defmodule CaminoChallenge.Fixtures.PessoaJuridicaFixture do
 
   def invalid_pessoa_juridica,
     do: %{
-      cnpj: "123456789104321",
+      cnpj: "1234567891043215423",
       nome: "some nome",
-      endereco: %{}
+      endereco: %{
+        cep: "12345450",
+        cidade: "Sobral",
+        uf: "CE",
+        pais: "Brasil",
+        rua: "Rua Um, 21"
+      }
     }
 end

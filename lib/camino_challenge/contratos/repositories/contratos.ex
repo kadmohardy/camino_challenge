@@ -119,7 +119,7 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
 
   def list_contratos(%{"data" => data}), do: {:ok, list_contratos_por_filtro(nil, data)}
 
-  def list_contratos do
+  def list_contratos(%{}) do
     # 1. Obtem todos as pessoas fisicas e armazena em memoria
     pessoas_fisicas = pessoas_fisicas_repo()
     pessoas_juridicas = pessoas_juridicas_repo()
@@ -181,13 +181,19 @@ defmodule CaminoChallenge.Contratos.Repositories.ContratoRepository do
         end
 
       ids_parts_list
-      |> Enum.map(fn item ->
-        %PartesContrato{}
-        |> PartesContrato.changeset(%{
-          "pessoa_id" => item,
-          "contrato_id" => contrato.id
-        })
-        |> Repo.insert()
+      |> Enum.each(fn item ->
+        inserted_parte =
+          case %PartesContrato{}
+               |> PartesContrato.changeset(%{
+                 "pessoa_id" => item,
+                 "contrato_id" => contrato.id
+               })
+               |> Repo.insert() do
+            {:ok, parte} -> parte
+            {:error, changeset} -> Repo.rollback(changeset)
+          end
+
+        inserted_parte
       end)
 
       {contrato, upload}

@@ -5,6 +5,7 @@
     "lib/camino_challenge_web.ex",
     "lib/camino_challenge_web/views/error_helpers.ex",
     "test/support/channel_case.ex",
+    "test/support/data_case.ex",
     "lib/camino_challenge/repo.ex"
   ],
   "coverage_options": {

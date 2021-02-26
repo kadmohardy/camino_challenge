@@ -2,7 +2,6 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
   use CaminoChallengeWeb.ConnCase
 
   alias CaminoChallenge.Fixtures.PessoaFisicaFixture
-  alias CaminoChallenge.PessoasFisicas.Entities.PessoaFisica
   alias CaminoChallenge.PessoasFisicas.Repositories.PessoaFisicaRepository
 
   def fixture(:pessoa_fisica) do

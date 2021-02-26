@@ -4,8 +4,6 @@ defmodule CaminoChallenge.Pessoas.Repositories.UtilsTest do
 
   require Logger
 
-
-
   describe "pessoas" do
     alias CaminoChallenge.Pessoas.Entities.Pessoa
 
@@ -16,6 +14,5 @@ defmodule CaminoChallenge.Pessoas.Repositories.UtilsTest do
     test "test valid_uuid?/1 with invalid uuid" do
       assert Validations.valid_uuid?("aaaaa") == false
     end
-
   end
 end
