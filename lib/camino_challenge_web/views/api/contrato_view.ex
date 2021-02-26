@@ -1,4 +1,5 @@
 defmodule CaminoChallengeWeb.Api.ContratoView do
+  @moduledoc false
   use CaminoChallengeWeb, :view
 
   def render("index.json", %{contratos: contratos}) do

@@ -1,4 +1,5 @@
 defmodule CaminoChallengeWeb.Api.EnderecoView do
+  @moduledoc false
   use CaminoChallengeWeb, :view
 
   def render("endereco.json", %{endereco: endereco}) do

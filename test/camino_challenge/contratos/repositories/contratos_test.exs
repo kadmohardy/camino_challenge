@@ -39,7 +39,7 @@ defmodule CaminoChallenge.ContratosTest do
       contrato
     end
 
-    def pessoa_fixture() do
+    def pessoa_fixture do
       {:ok, pessoa} =
         %Pessoa{}
         |> Pessoa.changeset(@pessoa_valid)

@@ -1,4 +1,5 @@
 defmodule CaminoChallengeWeb.Api.PessoaJuridicaView do
+  @moduledoc false
   use CaminoChallengeWeb, :view
 
   require Logger
