@@ -4,7 +4,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoasFisicasTest do
   alias CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository
 
   describe "pessoas_fisicas" do
-    alias CaminoChallenge.PessoaFisicaFixture
+    alias CaminoChallenge.Fixtures.PessoaFisicaFixture
     alias CaminoChallenge.Pessoas.Entities.PessoaFisica
 
     def pessoa_fisica_fixture(attrs \\ %{}) do
@@ -17,7 +17,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoasFisicasTest do
     end
 
     test "list_pessoas_fisicas/0 returns all pessoas_fisicas" do
-      pessoa_fisica = pessoa_fisica_fixture()
+      pessoa_fisica_fixture()
       assert PessoaFisicaRepository.list_pessoas_fisicas() |> Enum.count() == 1
     end
 
@@ -27,7 +27,7 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoasFisicasTest do
                  PessoaFisicaFixture.valid_pessoa_fisica()
                )
 
-      assert pessoa_fisica.cpf == "12345678910"
+      assert pessoa_fisica.cpf == "65330503035"
       assert pessoa_fisica.data_nascimento == ~D[2010-04-17]
       assert pessoa_fisica.pessoa.nome == "some nome"
       assert pessoa_fisica.pessoa.type == "fisica"

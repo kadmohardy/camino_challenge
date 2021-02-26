@@ -1,7 +1,7 @@
 defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
   use CaminoChallenge.DataCase
 
-  alias CaminoChallenge.PessoaJuridicaFixture
+  alias CaminoChallenge.Fixtures.PessoaJuridicaFixture
 
   describe "pessoas_juridicas" do
     alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
@@ -17,7 +17,7 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
     end
 
     test "list_pessoas_juridicas/0 returns all pessoas_juridicas" do
-      pessoa_juridica = pessoa_juridica_fixture()
+      pessoa_juridica_fixture()
       assert PessoaJuridicaRepository.list_pessoas_juridicas() |> Enum.count() == 1
     end
 
@@ -27,15 +27,17 @@ defmodule CaminoChallenge.PessoasJuridicas.Repositories.PessoasJuridicasTest do
           PessoaJuridicaFixture.valid_pessoa_juridica()
         )
 
-      assert pessoa_juridica.cnpj == "123456789104321"
+      assert pessoa_juridica.cnpj == "75569839000144"
       assert pessoa_juridica.pessoa.nome == "some nome"
     end
 
     test "create_pessoa_juridica/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} =
-               PessoaJuridicaRepository.create_pessoa_juridica(
-                 PessoaJuridicaFixture.invalid_pessoa_juridica()
-               )
+      {:error, %Ecto.Changeset{} = changeset} =
+        PessoaJuridicaRepository.create_pessoa_juridica(
+          PessoaJuridicaFixture.invalid_pessoa_juridica()
+        )
+
+      assert changeset.valid? == false
     end
   end
 end

@@ -1,4 +1,5 @@
 defmodule CaminoChallengeWeb.Api.PessoaJuridicaView do
+  @moduledoc false
   use CaminoChallengeWeb, :view
 
   require Logger
@@ -18,10 +19,6 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaView do
         endereco: render_one(endereco, EnderecoView, "endereco.json")
       }
     }
-  end
-
-  def render("show.json", %{pessoa_juridica: pessoa_juridica}) do
-    %{data: render_one(pessoa_juridica, __MODULE__, "pessoa_juridica.json")}
   end
 
   def render("pessoa_juridica.json", %{pessoa_juridica: pessoa_juridica}) do

@@ -1,6 +1,6 @@
 defmodule CaminoChallengeWeb.Api.ContratoView do
+  @moduledoc false
   use CaminoChallengeWeb, :view
-  alias CaminoChallengeWeb.Api.{PessoaFisicaView, PessoaJuridicaView, EnderecoView}
 
   def render("index.json", %{contratos: contratos}) do
     %{data: render_many(contratos, __MODULE__, "contrato_index.json")}

@@ -1,4 +1,8 @@
 defmodule CaminoChallenge.Contratos.Entities.Upload do
+  @moduledoc """
+    Module relativo a entidade de Upload que é representa o arquivo do tipo
+    pdf anexado ao contrato.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use Arc.Definition
@@ -10,7 +14,7 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Phoenix.Param, key: :id}
   schema "uploads" do
-    field :arquivo, CaminoChallenge.Uploders.Pdf.Type
+    field :arquivo, CaminoChallenge.Uploaders.Pdf.Type
     field :filename, :string
     field :content_type, :string
     field :hash, :string
@@ -35,20 +39,9 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
     |> validate_length(:hash, is: 64)
   end
 
-  def sha256(chunks_enum) do
-    chunks_enum
-    |> Enum.reduce(
-      :crypto.hash_init(:sha256),
-      &:crypto.hash_update(&2, &1)
-    )
-    |> :crypto.hash_final()
-    |> Base.encode16()
-    |> String.downcase()
-  end
-
   defp rename_to_unique(
          %{
-           "filename" => filename,
+           "filename" => _filename,
            "content_type" => content_type,
            "arquivo" => %Plug.Upload{filename: name, content_type: content_type} = arquivo
          } = attrs
@@ -63,12 +56,5 @@ defmodule CaminoChallenge.Contratos.Entities.Upload do
     arquivo = %Plug.Upload{arquivo | filename: encrypyted_name <> "." <> type}
 
     %{attrs | "arquivo" => arquivo, "filename" => encrypyted_name <> "." <> type}
-  end
-
-  defp get_type(
-         %{"arquivo" => %Plug.Upload{filename: name, content_type: content_type} = arquivo} =
-           attrs
-       ) do
-    Enum.at(String.split(content_type, "/"), 1)
   end
 end

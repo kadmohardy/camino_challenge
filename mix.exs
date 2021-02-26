@@ -83,7 +83,10 @@ defmodule CaminoChallenge.MixProject do
       {:absinthe_relay, "~> 1.4"},
       {:absinthe_ecto, "~> 0.1.3"},
       {:absinthe_error_payload, "~> 1.1"},
-      {:absinthe_phoenix, "~> 2.0.0"}
+      {:absinthe_phoenix, "~> 2.0.0"},
+      {:brcpfcnpj, "~> 0.2.3"},
+      {:ex_doc, "~> 0.19.3", only: [:dev]},
+      {:earmark, "~> 1.3", only: [:dev]}
     ]
   end
 

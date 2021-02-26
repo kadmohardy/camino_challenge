@@ -23,22 +23,6 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository do
   end
 
   @doc """
-  Gets a single pessoa_juridica.
-
-  Raises `Ecto.NoResultsError` if the Pessoa juridica does not exist.
-
-  ## Examples
-
-      iex> get_pessoa_juridica!(123)
-      %PessoaJuridica{}
-
-      iex> get_pessoa_juridica!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_pessoa_juridica!(id), do: Repo.get!(PessoaJuridica, id)
-
-  @doc """
   Creates a pessoa_juridica.
 
   ## Examples
@@ -58,26 +42,40 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository do
     Repo.get_by(PessoaJuridica, cnpj: cnpj)
     |> case do
       nil ->
-        Repo.transaction(fn ->
-          {:ok, pessoa} = Repo.insert(%Pessoa{nome: nome, type: "juridica"})
-
-          {:ok, pessoa_juridica} =
-            %PessoaJuridica{}
-            |> PessoaJuridica.changeset(%{cnpj: cnpj})
-            |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
-            |> Repo.insert()
-
-          {:ok, endereco} =
-            pessoa_juridica
-            |> Ecto.build_assoc(:enderecos)
-            |> Endereco.changeset(endereco)
-            |> Repo.insert()
-
-          {pessoa_juridica, endereco}
-        end)
+        try_insert_pessoa_juridica(nome, cnpj, endereco)
 
       _ ->
         {:error, "Já existe um cadastro para este CNPJ."}
     end
+  end
+
+  def try_insert_pessoa_juridica(nome, cnpj, endereco) do
+    Repo.transaction(fn ->
+      pessoa =
+        case Repo.insert(%Pessoa{nome: nome, type: "juridica"}) do
+          {:ok, pessoa} -> pessoa
+          {:error, changeset} -> Repo.rollback(changeset)
+        end
+
+      pessoa_juridica =
+        case %PessoaJuridica{}
+             |> PessoaJuridica.changeset(%{cnpj: cnpj})
+             |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
+             |> Repo.insert() do
+          {:ok, pessoa_juridica} -> pessoa_juridica
+          {:error, changeset} -> Repo.rollback(changeset)
+        end
+
+      endereco =
+        case pessoa_juridica
+             |> Ecto.build_assoc(:enderecos)
+             |> Endereco.changeset(endereco)
+             |> Repo.insert() do
+          {:ok, endereco_res} -> endereco_res
+          {:error, changeset} -> Repo.rollback(changeset)
+        end
+
+      {pessoa_juridica, endereco}
+    end)
   end
 end

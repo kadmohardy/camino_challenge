@@ -1,9 +1,9 @@
 defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
   use CaminoChallengeWeb, :controller
-
-  alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
+  alias CaminoChallenge.Api.Params.PessoaJuridicaParams
   alias CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository
-  require Logger
+  alias CaminoChallenge.Pessoas.Services.CreatePessoaJuridica
+
   action_fallback CaminoChallengeWeb.FallbackController
 
   def index(conn, _params) do
@@ -12,37 +12,21 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaController do
   end
 
   def create(conn, %{"pessoa_juridica" => pessoa_juridica_params}) do
-    with {:ok, {pessoa_juridica, endereco}} <-
-           PessoaJuridicaRepository.create_pessoa_juridica(pessoa_juridica_params) do
+    changeset =
+      PessoaJuridicaParams.from(pessoa_juridica_params, with: &PessoaJuridicaParams.child/2)
+
+    if changeset.valid? do
+      with {:ok, {pessoa_juridica, endereco}} <-
+             CreatePessoaJuridica.execute(pessoa_juridica_params) do
+        conn
+        |> put_status(:created)
+        |> render("create.json", pessoa_juridica: pessoa_juridica, endereco: endereco)
+      end
+    else
       conn
-      |> put_status(:created)
-      |> render("create.json", pessoa_juridica: pessoa_juridica, endereco: endereco)
-    end
-  end
-
-  def show(conn, %{"id" => id}) do
-    pessoa_juridica = PessoaJuridicaRepository.get_pessoa_juridica!(id)
-    render(conn, "show.json", pessoa_juridica: pessoa_juridica)
-  end
-
-  def update(conn, %{"id" => id, "pessoa_juridica" => pessoa_juridica_params}) do
-    pessoa_juridica = PessoaJuridicaRepository.get_pessoa_juridica!(id)
-
-    with {:ok, %PessoaJuridica{} = pessoa_juridica} <-
-           PessoaJuridicaRepository.update_pessoa_juridica(
-             pessoa_juridica,
-             pessoa_juridica_params
-           ) do
-      render(conn, "show.json", pessoa_juridica: pessoa_juridica)
-    end
-  end
-
-  def delete(conn, %{"id" => id}) do
-    pessoa_juridica = PessoaJuridicaRepository.get_pessoa_juridica!(id)
-
-    with {:ok, %PessoaJuridica{}} <-
-           PessoaJuridicaRepository.delete_pessoa_juridica(pessoa_juridica) do
-      send_resp(conn, :no_content, "")
+      |> put_status(:unprocessable_entity)
+      |> put_view(CaminoChallengeWeb.ChangesetView)
+      |> render("error.json", changeset: changeset)
     end
   end
 end

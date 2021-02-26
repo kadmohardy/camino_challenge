@@ -1,4 +1,5 @@
 defmodule CaminoChallengeWeb.Endpoint do
+  @moduledoc false
   use Phoenix.Endpoint, otp_app: :camino_challenge
 
   # The session will be stored in the cookie and signed,
@@ -9,10 +10,6 @@ defmodule CaminoChallengeWeb.Endpoint do
     key: "_camino_challenge_key",
     signing_salt: "QXEjaOMV"
   ]
-
-  socket "/socket", CaminoChallengeWeb.UserSocket,
-    websocket: true,
-    longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 

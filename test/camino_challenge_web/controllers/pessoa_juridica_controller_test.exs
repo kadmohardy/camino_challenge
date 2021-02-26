@@ -1,9 +1,9 @@
 defmodule CaminoChallengeWeb.Api.PessoaJuridicaControllerTest do
   use CaminoChallengeWeb.ConnCase
 
+  alias CaminoChallenge.Fixtures.PessoaJuridicaFixture
   alias CaminoChallenge.Pessoas.Entities.PessoaJuridica
   alias CaminoChallenge.Pessoas.Repositories.PessoaJuridicaRepository
-  alias CaminoChallenge.PessoaJuridicaFixture
 
   def fixture(:pessoa_juridica) do
     {:ok, pessoa_juridica} =
@@ -26,7 +26,7 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaControllerTest do
   end
 
   describe "create pessoa_juridica" do
-    test "testing create contrato with valid attrs", %{conn: conn} do
+    test "testing create jurifica with valid attrs", %{conn: conn} do
       api_conn =
         conn
         |> post("/api/pessoas/juridicas",
@@ -37,18 +37,25 @@ defmodule CaminoChallengeWeb.Api.PessoaJuridicaControllerTest do
 
       response = body["data"]
 
-      assert response["cnpj"] == "123456789104321"
+      assert response["cnpj"] == "75569839000144"
       assert response["nome"] == "some nome"
+    end
 
-      # cnpj: "123456789104321",
-      # nome: "some nome",
-      # endereco: %{
-      #   cep: "12345450",
-      #   cidade: "Sobral",
-      #   uf: "CE",
-      #   pais: "Brasil",
-      #   rua: "Rua Um, 21"
-      # }
+    test "testing create jurifica with invalid attrs", %{conn: conn} do
+      api_conn =
+        conn
+        |> post("/api/pessoas/juridicas",
+          pessoa_juridica: PessoaJuridicaFixture.invalid_pessoa_juridica()
+        )
+
+      body = api_conn |> response(422) |> Poison.decode!()
+
+      response = body["errors"]
+
+      assert response["cnpj"] == [
+               "CNPJ inválido",
+               "CNPJ deve ter 14 caracteress. Siga o formato XXXXXXXXXXX"
+             ]
     end
   end
 

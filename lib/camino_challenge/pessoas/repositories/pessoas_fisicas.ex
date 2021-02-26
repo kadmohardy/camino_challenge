@@ -23,22 +23,6 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
   end
 
   @doc """
-  Gets a single pessoa_fisica.
-
-  Raises `Ecto.NoResultsError` if the Pessoa fisica does not exist.
-
-  ## Examples
-
-      iex> get_pessoa_fisica!(123)
-      %PessoaFisica{}
-
-      iex> get_pessoa_fisica!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_pessoa_fisica!(id), do: Repo.get!(PessoaFisica, id)
-
-  @doc """
   Creates a pessoa_fisica.
 
   ## Examples
@@ -51,12 +35,6 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
 
   """
 
-  # def create_pessoa_fisica(attrs \\ %{}) do
-  #   %PessoaFisica{}
-  #   |> PessoaFisica.changeset(attrs)
-  #   |> Repo.insert()
-  # end
-  # %{"nome" => nome, "cpf" => cpf, "data_nascimento" => data_nascimento}
   def create_pessoa_fisica(attrs \\ %{}) do
     nome = attrs["nome"] || attrs.nome
     cpf = attrs["cpf"] || attrs.cpf
@@ -65,23 +43,35 @@ defmodule CaminoChallenge.Pessoas.Repositories.PessoaFisicaRepository do
     Repo.get_by(PessoaFisica, cpf: cpf)
     |> case do
       nil ->
-        Repo.transaction(fn ->
-          {:ok, pessoa} = Repo.insert(%Pessoa{nome: nome, type: "fisica"})
-
-          {:ok, pessoa_fisica} =
-            %PessoaFisica{}
-            |> PessoaFisica.changeset(%{
-              cpf: cpf,
-              data_nascimento: data_nascimento
-            })
-            |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
-            |> Repo.insert()
-
-          pessoa_fisica
-        end)
+        transaction_pessoa_fisica(nome, cpf, data_nascimento)
 
       _ ->
         {:error, "Já existe um cadastro para este CPF."}
+    end
+  end
+
+  def transaction_pessoa_fisica(nome, cpf, data_nascimento) do
+    Repo.transaction(fn ->
+      pessoa =
+        case Repo.insert(%Pessoa{nome: nome, type: "fisica"}) do
+          {:ok, pessoa} -> pessoa
+          {:error, changeset} -> Repo.rollback(changeset)
+        end
+
+      try_insert_pessoa_fisica(cpf, data_nascimento, pessoa)
+    end)
+  end
+
+  def try_insert_pessoa_fisica(cpf, data_nascimento, pessoa) do
+    case %PessoaFisica{}
+         |> PessoaFisica.changeset(%{
+           cpf: cpf,
+           data_nascimento: data_nascimento
+         })
+         |> Ecto.Changeset.put_assoc(:pessoa, pessoa)
+         |> Repo.insert() do
+      {:ok, pessoa_fisica} -> pessoa_fisica
+      {:error, changeset} -> Repo.rollback(changeset)
     end
   end
 end
