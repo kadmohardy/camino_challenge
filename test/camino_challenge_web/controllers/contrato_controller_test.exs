@@ -12,29 +12,29 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
     {:ok, pessoa_fisica} =
       PessoaFisicaRepository.create_pessoa_fisica(PessoaFisicaFixture.valid_pessoa_fisica())
 
-      ContratoRepository.create_contrato(%{
-        nome: "some name",
-        descricao: "some description",
-        data: "2020-09-24",
-        arquivo: %Plug.Upload{
-          path: "test/support/fixtures/files/desafio.pdf",
-          content_type: "application/pdf",
-          filename: "desafio.pdf"
-        },
-        partes: pessoa_fisica.pessoa_id
-      })
+    ContratoRepository.create_contrato(%{
+      nome: "some name",
+      descricao: "some description",
+      data: "2020-09-24",
+      arquivo: %Plug.Upload{
+        path: "test/support/fixtures/files/desafio.pdf",
+        content_type: "application/pdf",
+        filename: "desafio.pdf"
+      },
+      partes: pessoa_fisica.pessoa_id
+    })
 
-      ContratoRepository.create_contrato(%{
-        nome: "some name 2",
-        descricao: "some description 2",
-        data: "2020-09-25",
-        arquivo: %Plug.Upload{
-          path: "test/support/fixtures/files/desafio.pdf",
-          content_type: "application/pdf",
-          filename: "desafio.pdf"
-        },
-        partes: pessoa_fisica.pessoa_id
-      })
+    ContratoRepository.create_contrato(%{
+      nome: "some name 2",
+      descricao: "some description 2",
+      data: "2020-09-25",
+      arquivo: %Plug.Upload{
+        path: "test/support/fixtures/files/desafio.pdf",
+        content_type: "application/pdf",
+        filename: "desafio.pdf"
+      },
+      partes: pessoa_fisica.pessoa_id
+    })
 
     pessoa_fisica
   end
@@ -77,10 +77,13 @@ defmodule CaminoChallengeWeb.ContratoControllerTest do
       assert body["data"] |> Enum.count() == 0
     end
 
-     test "listando contratos por filtro", %{conn: conn} do
+    test "listando contratos por filtro", %{conn: conn} do
       api_conn =
         conn
-        |> get("/api/contratos", %{data: "2020-09-24", pessoa_id: "95827e2e-3457-471e-8a61-92a1cf6c4cfa"})
+        |> get("/api/contratos", %{
+          data: "2020-09-24",
+          pessoa_id: "95827e2e-3457-471e-8a61-92a1cf6c4cfa"
+        })
 
       body = api_conn |> response(200) |> Poison.decode!()
       assert body["data"] |> Enum.count() == 0

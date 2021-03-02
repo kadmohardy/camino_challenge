@@ -51,5 +51,4 @@ defmodule CaminoChallengeWeb.Api.PessoaFisicaControllerTest do
       assert response["data_nascimento"] == ["is invalid"]
     end
   end
-
 end
